@@ -16,6 +16,10 @@
 
 ---
 
+<div align="center">
+  <img src="frontend/demo-animation.webp" alt="RAG Sentinel Vector space visualizer and ingestion simulator walkthrough animation" width="850" style="border-radius:12px; border: 1px solid rgba(0, 212, 255, 0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.5);" />
+</div>
+
 ## 🎯 What is RAG Poisoning?
 
 Retrieval-Augmented Generation (RAG) systems retrieve documents from a vector index to ground LLM responses in real data. This makes them powerful — and exploitable.
