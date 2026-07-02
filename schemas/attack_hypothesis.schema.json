@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AttackHypothesis",
+  "type": "object",
+  "required": [
+    "incident_scope",
+    "primary_hypothesis",
+    "primary_attack_family",
+    "supporting_evidence",
+    "alternative_hypotheses",
+    "why_not_benign",
+    "confidence",
+    "recommended_severity"
+  ],
+  "properties": {
+    "incident_scope": { "type": "string" },
+    "primary_hypothesis": { "type": "string" },
+    "primary_attack_family": { "type": "string" },
+    "supporting_evidence": { "type": "array", "items": { "type": "string" } },
+    "alternative_hypotheses": { "type": "array", "items": { "type": "string" } },
+    "why_not_benign": { "type": "array", "items": { "type": "string" } },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "recommended_severity": { "type": "string", "enum": ["low", "medium", "high", "critical"] }
+  }
+}
+

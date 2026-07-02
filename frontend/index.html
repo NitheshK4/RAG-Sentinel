@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RAG Sentinel — Vector Index Poisoning Detector</title>
+  <meta name="description" content="Production-grade AI security analyst dashboard for detecting, investigating, and remediating vector index poisoning attacks in RAG pipelines." />
+  <link rel="canonical" href="http://localhost:8000/" />
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="http://localhost:8000/" />
+  <meta property="og:title" content="RAG Sentinel — Vector Index Poisoning Detector" />
+  <meta property="og:description" content="Production-grade AI security analyst dashboard for detecting, investigating, and remediating vector index poisoning attacks in RAG pipelines." />
+  <meta property="og:image" content="/static/logo-preview.png" />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="http://localhost:8000/" />
+  <meta property="twitter:title" content="RAG Sentinel — Vector Index Poisoning Detector" />
+  <meta property="twitter:description" content="Production-grade AI security analyst dashboard for detecting, investigating, and remediating vector index poisoning attacks in RAG pipelines." />
+  <meta property="twitter:image" content="/static/logo-preview.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <!-- Mode Banner -->
+  <div id="mode-banner" class="mode-banner">
+    <span id="mode-icon">⚡</span>
+    <span id="mode-text">Checking mode...</span>
+  </div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="logo-group">
+        <div class="logo-shield">
+          <svg width="32" height="36" viewBox="0 0 32 36" fill="none">
+            <path d="M16 0L32 8V20C32 28.837 24.837 35.5 16 36C7.163 35.5 0 28.837 0 20V8L16 0Z" fill="url(#shield-grad)"/>
+            <path d="M10 18L14.5 22.5L22 14" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="shield-grad" x1="0" y1="0" x2="32" y2="36" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#00d4ff"/>
+                <stop offset="100%" stop-color="#0066cc"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div>
+          <h1 class="app-title">RAG Sentinel</h1>
+          <p class="app-subtitle">Vector Index Poisoning Detector</p>
+        </div>
+      </div>
+      <nav class="header-nav" role="tablist" aria-label="Main Navigation">
+        <a href="#" class="nav-link active" data-view="dashboard" id="nav-dashboard" role="tab" aria-selected="true" aria-controls="view-dashboard">Dashboard</a>
+        <a href="#" class="nav-link" data-view="pipeline" id="nav-pipeline" role="tab" aria-selected="false" aria-controls="view-pipeline">Pipelines</a>
+        <a href="#" class="nav-link" data-view="visualizer" id="nav-visualizer" role="tab" aria-selected="false" aria-controls="view-visualizer">Visualizer</a>
+        <a href="#" class="nav-link" data-view="incidents" id="nav-incidents" role="tab" aria-selected="false" aria-controls="view-incidents">Incidents</a>
+        <a href="#" class="nav-link" data-view="architecture" id="nav-architecture" role="tab" aria-selected="false" aria-controls="view-architecture">Architecture</a>
+        <a href="/docs" class="nav-link" target="_blank" role="link">API Docs ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="app-main">
+
+    <!-- ======================== DASHBOARD VIEW ======================== -->
+    <div id="view-dashboard" class="view active" role="tabpanel" aria-labelledby="nav-dashboard">
+      <!-- Hero Stats -->
+      <section class="stats-row">
+        <div class="stat-card" id="stat-pipelines">
+          <div class="stat-icon">🔍</div>
+          <div class="stat-value">9</div>
+          <div class="stat-label">Detection Pipelines</div>
+        </div>
+        <div class="stat-card" id="stat-families">
+          <div class="stat-icon">🎯</div>
+          <div class="stat-value">7</div>
+          <div class="stat-label">Attack Families</div>
+        </div>
+        <div class="stat-card" id="stat-schemas">
+          <div class="stat-icon">📋</div>
+          <div class="stat-value">9</div>
+          <div class="stat-label">Validated Schemas</div>
+        </div>
+        <div class="stat-card" id="stat-mode">
+          <div class="stat-icon" id="dash-mode-icon">🟡</div>
+          <div class="stat-value" id="dash-mode-val">—</div>
+          <div class="stat-label">Current Mode</div>
+        </div>
+      </section>
+
+      <!-- Telemetry Dashboard -->
+      <section class="section">
+        <h2 class="section-title">Live Telemetry & Index Health</h2>
+        <p class="section-desc">Real-time vector ingestion stats and security compliance health index.</p>
+        <div class="telemetry-grid">
+          <!-- Radial health gauge -->
+          <div class="telemetry-card health-card">
+            <h3 class="panel-subtitle">Index Security Health</h3>
+            <div class="gauge-container">
+              <svg viewBox="0 0 100 100" class="health-gauge">
+                <circle cx="50" cy="50" r="40" class="gauge-bg"></circle>
+                <circle cx="50" cy="50" r="40" class="gauge-fill" id="health-gauge-fill"></circle>
+              </svg>
+              <div class="gauge-text">
+                <span class="gauge-val" id="health-score-val">98%</span>
+                <span class="gauge-lbl">Secured</span>
+              </div>
+            </div>
+            <div class="health-meta">
+              <div class="health-meta-item">
+                <span class="dot dot-clean"></span> <span>Clean: 98.4%</span>
+              </div>
+              <div class="health-meta-item">
+                <span class="dot dot-poisoned"></span> <span>Threats Blocked: 24</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Ingestion traffic timeline -->
+          <div class="telemetry-card chart-card">
+            <h3 class="panel-subtitle">Audited Vector Ingestion (Last 24h)</h3>
+            <div class="chart-container">
+              <svg id="telemetry-chart" viewBox="0 0 500 150">
+                <!-- SVG path for traffic -->
+                <path d="M 0 130 Q 80 110 160 120 T 320 80 T 480 60 L 500 90 L 500 150 L 0 150 Z" class="chart-area"></path>
+                <path d="M 0 130 Q 80 110 160 120 T 320 80 T 480 60" class="chart-line"></path>
+                <!-- Anomaly points -->
+                <circle cx="320" cy="80" r="5" class="chart-dot dot-poisoned"></circle>
+                <circle cx="420" cy="65" r="5" class="chart-dot dot-warning"></circle>
+              </svg>
+            </div>
+            <div class="chart-legend">
+              <span>● Ingested Chunks</span>
+              <span style="color:var(--route-quarantine)">● Anomalous Detections</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Attack Family Grid -->
+      <section class="section">
+        <h2 class="section-title">Attack Family Reference</h2>
+        <div class="attack-grid">
+          <div class="attack-card" data-family="instruction_injection">
+            <div class="attack-icon">💉</div>
+            <div class="attack-name">Instruction Injection</div>
+            <div class="attack-desc">Override model behavior with embedded commands inside retrieved chunks</div>
+          </div>
+          <div class="attack-card" data-family="authority_spoofing">
+            <div class="attack-icon">🎭</div>
+            <div class="attack-name">Authority Spoofing</div>
+            <div class="attack-desc">Falsely impersonate official policies, directives, or trusted sources</div>
+          </div>
+          <div class="attack-card" data-family="near_duplicate_flooding">
+            <div class="attack-icon">🌊</div>
+            <div class="attack-name">Near-Duplicate Flooding</div>
+            <div class="attack-desc">Flood the index with near-identical chunks to dominate retrieval rankings</div>
+          </div>
+          <div class="attack-card" data-family="contradiction_injection">
+            <div class="attack-icon">⚡</div>
+            <div class="attack-name">Contradiction Injection</div>
+            <div class="attack-desc">Insert chunks that contradict established facts or policies</div>
+          </div>
+          <div class="attack-card" data-family="answer_hijacking">
+            <div class="attack-icon">🎣</div>
+            <div class="attack-name">Answer Hijacking</div>
+            <div class="attack-desc">Replace legitimate answers with attacker-controlled misinformation</div>
+          </div>
+          <div class="attack-card" data-family="query_baiting">
+            <div class="attack-icon">🪤</div>
+            <div class="attack-name">Query Baiting</div>
+            <div class="attack-desc">Craft chunks that match high-value queries to hijack sensitive retrieval</div>
+          </div>
+          <div class="attack-card" data-family="ranking_manipulation">
+            <div class="attack-icon">📊</div>
+            <div class="attack-name">Ranking Manipulation</div>
+            <div class="attack-desc">Exploit embedding similarity to artificially elevate malicious chunks</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quick Run Panel -->
+      <section class="section">
+        <h2 class="section-title">Quick Run Demo</h2>
+        <p class="section-desc">Run any pipeline with pre-loaded sample data from the examples directory.</p>
+        <div class="quick-run-grid">
+          <button class="quick-btn" id="qr-source-triage" onclick="quickRun('source_triage')">
+            <span class="qr-icon">📥</span>
+            <span class="qr-label">Source Intake Triage</span>
+            <span class="qr-stage">Ingestion</span>
+          </button>
+          <button class="quick-btn" id="qr-chunk-audit" onclick="quickRun('chunk_audit')">
+            <span class="qr-icon">🔬</span>
+            <span class="qr-label">Chunk Semantic Audit</span>
+            <span class="qr-stage">Ingestion</span>
+          </button>
+          <button class="quick-btn" id="qr-retrieval-trace" onclick="quickRun('retrieval_trace')">
+            <span class="qr-icon">📡</span>
+            <span class="qr-label">Retrieval Trace Investigator</span>
+            <span class="qr-stage">Detection</span>
+          </button>
+          <button class="quick-btn" id="qr-attack-hypothesis" onclick="quickRun('attack_hypothesis')">
+            <span class="qr-icon">🧩</span>
+            <span class="qr-label">Attack Hypothesis Builder</span>
+            <span class="qr-stage">Detection</span>
+          </button>
+          <button class="quick-btn" id="qr-incident-report" onclick="quickRun('incident_report')">
+            <span class="qr-icon">📄</span>
+            <span class="qr-label">Incident Reporter</span>
+            <span class="qr-stage">Reporting</span>
+          </button>
+          <button class="quick-btn" id="qr-remediation-plan" onclick="quickRun('remediation_plan')">
+            <span class="qr-icon">🛠️</span>
+            <span class="qr-label">Remediation Planner</span>
+            <span class="qr-stage">Reporting</span>
+          </button>
+        </div>
+        <!-- Quick Run Result -->
+        <div id="quick-result-panel" class="result-panel hidden">
+          <div class="result-header">
+            <span id="quick-result-title" class="result-title"></span>
+            <div id="quick-result-badges" class="badge-row"></div>
+            <button class="close-btn" onclick="closeQuickResult()">✕</button>
+          </div>
+          <div id="quick-result-content" class="result-content"></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ======================== PIPELINE VIEW ======================== -->
+    <div id="view-pipeline" class="view" role="tabpanel" aria-labelledby="nav-pipeline">
+      <div class="pipeline-layout">
+        <!-- Stage Tabs -->
+        <aside class="stage-sidebar">
+          <div class="stage-group">
+            <div class="stage-group-label">Ingestion</div>
+            <button class="stage-btn active" data-stage="source_triage" onclick="selectStage('source_triage', this)">
+              📥 Source Intake Triage
+            </button>
+            <button class="stage-btn" data-stage="chunk_audit" onclick="selectStage('chunk_audit', this)">
+              🔬 Chunk Semantic Audit
+            </button>
+          </div>
+          <div class="stage-group">
+            <div class="stage-group-label">Detection</div>
+            <button class="stage-btn" data-stage="neighbor_audit" onclick="selectStage('neighbor_audit', this)">
+              🔗 Neighbor Consistency Audit
+            </button>
+            <button class="stage-btn" data-stage="retrieval_trace" onclick="selectStage('retrieval_trace', this)">
+              📡 Retrieval Trace Investigator
+            </button>
+            <button class="stage-btn" data-stage="attack_hypothesis" onclick="selectStage('attack_hypothesis', this)">
+              🧩 Attack Hypothesis Builder
+            </button>
+          </div>
+          <div class="stage-group">
+            <div class="stage-group-label">Evaluation</div>
+            <button class="stage-btn" data-stage="attack_generator" onclick="selectStage('attack_generator', this)">
+              ⚗️ Attack Generator
+            </button>
+            <button class="stage-btn" data-stage="benchmark_judge" onclick="selectStage('benchmark_judge', this)">
+              🏆 Benchmark Judge
+            </button>
+          </div>
+          <div class="stage-group">
+            <div class="stage-group-label">Reporting</div>
+            <button class="stage-btn" data-stage="incident_report" onclick="selectStage('incident_report', this)">
+              📄 Incident Reporter
+            </button>
+            <button class="stage-btn" data-stage="remediation_plan" onclick="selectStage('remediation_plan', this)">
+              🛠️ Remediation Planner
+            </button>
+          </div>
+          <div class="stage-group">
+            <div class="stage-group-label">System</div>
+            <button class="stage-btn" data-stage="orchestrator" onclick="selectStage('orchestrator', this)">
+              🎛️ Orchestrator
+            </button>
+          </div>
+        </aside>
+
+        <!-- Form + Result Panel -->
+        <div class="pipeline-main">
+          <div class="form-panel">
+            <div id="stage-header" class="stage-header">
+              <h2 id="stage-title" class="stage-title">Source Intake Triage</h2>
+              <p id="stage-desc" class="stage-desc">Assess a source before chunking and indexing.</p>
+              <div class="stage-actions">
+                <button class="btn-demo" onclick="loadDemo()">Load Demo Data</button>
+                <button class="btn-run" id="run-btn" onclick="runPipeline()">
+                  <span id="run-btn-text">Run Analysis</span>
+                  <span id="run-spinner" class="spinner hidden"></span>
+                </button>
+              </div>
+            </div>
+            <div id="pipeline-form" class="pipeline-form"></div>
+          </div>
+
+          <!-- Result Panel -->
+          <div id="pipeline-result-panel" class="result-panel hidden">
+            <div class="result-header">
+              <span id="pipeline-result-title" class="result-title"></span>
+              <div id="pipeline-result-badges" class="badge-row"></div>
+            </div>
+            <div id="pipeline-result-content" class="result-content"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================== VISUALIZER VIEW ======================== -->
+    <div id="view-visualizer" class="view" role="tabpanel" aria-labelledby="nav-visualizer">
+      <div class="visualizer-layout">
+        <!-- Visualizer canvas & simulation controls -->
+        <div class="visualizer-main">
+          <div class="panel-header">
+            <h2 class="section-title">2D Vector Space Visualizer</h2>
+            <p class="section-desc">Interactive representation of chunk embeddings. Red nodes indicate poisoned chunks injected to hijack search relevance.</p>
+          </div>
+          
+          <div class="canvas-container">
+            <canvas id="vector-canvas" width="680" height="420"></canvas>
+            <!-- Canvas HUD -->
+            <div class="canvas-hud">
+              <button class="hud-btn" onclick="zoomCanvas(1.1)">🔍+</button>
+              <button class="hud-btn" onclick="zoomCanvas(0.9)">🔍-</button>
+              <button class="hud-btn" onclick="resetCanvas()">⟲ Reset</button>
+            </div>
+          </div>
+          
+          <!-- Simulation Control Board -->
+          <div class="sim-control-board">
+            <h3 class="panel-subtitle">Multi-Stage Ingestion Simulator (Red Teaming)</h3>
+            <div class="sim-presets">
+              <button class="sim-preset-btn active" data-preset="clean" onclick="loadSimPreset('clean')">🟢 Clean State</button>
+              <button class="sim-preset-btn" data-preset="spoof" onclick="loadSimPreset('spoof')">🟠 Authority Spoofing</button>
+              <button class="sim-preset-btn" data-preset="injection" onclick="loadSimPreset('injection')">🔴 Instruction Injection</button>
+            </div>
+            <div class="sim-actions">
+              <button class="btn-run" id="sim-run-btn" onclick="runAttackSimulation()">
+                <span>Simulate Ingestion & Indexing</span>
+                <span id="sim-spinner" class="spinner hidden"></span>
+              </button>
+            </div>
+            
+            <!-- Live Simulation Pipeline Flow -->
+            <div class="sim-pipeline-flow">
+              <div class="sim-step" id="sim-step-triage">
+                <div class="sim-step-dot"></div>
+                <div class="sim-step-label">Source Triage</div>
+              </div>
+              <div class="sim-step-arrow">➔</div>
+              <div class="sim-step" id="sim-step-audit">
+                <div class="sim-step-dot"></div>
+                <div class="sim-step-label">Chunk Audit</div>
+              </div>
+              <div class="sim-step-arrow">➔</div>
+              <div class="sim-step" id="sim-step-consistency">
+                <div class="sim-step-dot"></div>
+                <div class="sim-step-label">Neighbor Audit</div>
+              </div>
+              <div class="sim-step-arrow">➔</div>
+              <div class="sim-step" id="sim-step-indexing">
+                <div class="sim-step-dot"></div>
+                <div class="sim-step-label">Vector Indexing</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Inspector sidebar -->
+        <aside class="visualizer-sidebar">
+          <h3 class="panel-subtitle">Embedding Inspector</h3>
+          <p class="section-desc" style="margin-bottom:12px">Click any chunk in the vector map to inspect its properties.</p>
+          
+          <div id="inspector-card" class="inspector-card empty">
+            <div class="inspector-empty-msg">No node selected. Click on a data point inside the vector map.</div>
+            <div class="inspector-details hidden">
+              <div class="inspector-header">
+                <span class="inspector-node-id" id="insp-id">c_991</span>
+                <span class="badge" id="insp-risk">poisoned</span>
+              </div>
+              
+              <div class="insp-stat-row">
+                <div class="insp-stat">
+                  <div class="insp-stat-val" id="insp-similarity">0.92</div>
+                  <div class="insp-stat-lbl">Cosine Similarity</div>
+                </div>
+                <div class="insp-stat">
+                  <div class="insp-stat-val" id="insp-centroid-dist">0.84</div>
+                  <div class="insp-stat-lbl">Centroid Dist</div>
+                </div>
+              </div>
+              
+              <div class="insp-meta-section">
+                <div class="form-label">Source Document</div>
+                <div class="insp-meta-val" id="insp-source">doc_0142 (low trust)</div>
+              </div>
+              
+              <div class="insp-meta-section">
+                <div class="form-label">Chunk Text</div>
+                <div class="insp-chunk-text" id="insp-text">Ignore prior retrieval safeguards...</div>
+              </div>
+              
+              <div class="insp-meta-section" id="insp-threat-section">
+                <div class="form-label">Identified Threat</div>
+                <div class="insp-meta-val" id="insp-threat" style="color:var(--sev-critical)">instruction_injection</div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- ======================== INCIDENTS VIEW ======================== -->
+    <div id="view-incidents" class="view" role="tabpanel" aria-labelledby="nav-incidents">
+      <section class="section">
+        <h2 class="section-title">Incident Feed</h2>
+        <p class="section-desc">Live incident records and investigation history.</p>
+        <div id="incident-feed" class="incident-feed">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+    </div>
+
+    <!-- ======================== ARCHITECTURE VIEW ======================== -->
+    <div id="view-architecture" class="view" role="tabpanel" aria-labelledby="nav-architecture">
+      <section class="section">
+        <h2 class="section-title">System Architecture</h2>
+        <p class="section-desc">7-stage pipeline from source intake to incident remediation.</p>
+        <div class="arch-diagram">
+          <div class="arch-flow">
+            <!-- Stage nodes -->
+            <div class="arch-stage-col">
+              <div class="arch-node node-ingestion" onclick="showArchDetail('source_discovery')">
+                <div class="arch-node-icon">🌐</div>
+                <div class="arch-node-label">Source Discovery</div>
+              </div>
+            </div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-stage-col">
+              <div class="arch-node node-ingestion" onclick="showArchDetail('normalization')">
+                <div class="arch-node-icon">✂️</div>
+                <div class="arch-node-label">Normalization & Chunking</div>
+              </div>
+            </div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-stage-col">
+              <div class="arch-node node-ingestion" onclick="showArchDetail('feature_extraction')">
+                <div class="arch-node-icon">⚙️</div>
+                <div class="arch-node-label">Feature Extraction</div>
+              </div>
+            </div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-stage-col">
+              <div class="arch-node node-detection" onclick="showArchDetail('risk_scoring')">
+                <div class="arch-node-icon">🎯</div>
+                <div class="arch-node-label">Risk Scoring Ensemble</div>
+              </div>
+            </div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-stage-col decision-col">
+              <div class="arch-node node-decision" onclick="showArchDetail('risk_decision')">
+                <div class="arch-node-icon">⚖️</div>
+                <div class="arch-node-label">Risk Decision</div>
+              </div>
+              <div class="decision-branches">
+                <span class="decision-allow">allow</span>
+                <span class="decision-quarantine">quarantine</span>
+              </div>
+            </div>
+          </div>
+          <div class="arch-flow arch-flow-bottom">
+            <div class="arch-node node-index" onclick="showArchDetail('vector_index')">
+              <div class="arch-node-icon">🗄️</div>
+              <div class="arch-node-label">Vector Index</div>
+            </div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-node node-retrieval" onclick="showArchDetail('retrieval_service')">
+              <div class="arch-node-icon">🔍</div>
+              <div class="arch-node-label">Retrieval Service</div>
+            </div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-node node-monitor" onclick="showArchDetail('trace_monitor')">
+              <div class="arch-node-icon">👁️</div>
+              <div class="arch-node-label">Retrieval Trace Monitor</div>
+            </div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-node node-incident" onclick="showArchDetail('incident_management')">
+              <div class="arch-node-icon">📋</div>
+              <div class="arch-node-label">Incident Management</div>
+            </div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-node node-review" onclick="showArchDetail('review_queue')">
+              <div class="arch-node-icon">🔒</div>
+              <div class="arch-node-label">Review Queue</div>
+            </div>
+          </div>
+          <!-- Arch Detail Panel -->
+          <div id="arch-detail" class="arch-detail hidden"></div>
+        </div>
+
+        <!-- Trust Boundaries -->
+        <div class="trust-boundaries">
+          <h3 class="subsection-title">Trust Boundaries</h3>
+          <div class="trust-grid">
+            <div class="trust-card trust-untrusted">
+              <div class="trust-label">Untrusted</div>
+              <div class="trust-items">Raw documents · Retrieved chunks · User queries · External metadata</div>
+            </div>
+            <div class="trust-card trust-semi">
+              <div class="trust-label">Semi-Trusted</div>
+              <div class="trust-items">Connector metadata from approved platforms</div>
+            </div>
+            <div class="trust-card trust-trusted">
+              <div class="trust-label">Trusted</div>
+              <div class="trust-items">System prompts · Schema validators · Scoring code · Signed model config</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

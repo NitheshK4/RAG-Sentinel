@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SourceTriage",
+  "type": "object",
+  "required": [
+    "source_id",
+    "trust_tier_assessment",
+    "provenance_gaps",
+    "suspicious_signals",
+    "benign_signals",
+    "primary_attack_family",
+    "severity",
+    "routing_decision",
+    "evidence",
+    "analyst_notes"
+  ],
+  "properties": {
+    "source_id": { "type": "string" },
+    "trust_tier_assessment": { "type": "string", "enum": ["high", "medium", "low", "unknown"] },
+    "provenance_gaps": { "type": "array", "items": { "type": "string" } },
+    "suspicious_signals": { "type": "array", "items": { "type": "string" } },
+    "benign_signals": { "type": "array", "items": { "type": "string" } },
+    "primary_attack_family": {
+      "type": "string",
+      "enum": [
+        "instruction_injection",
+        "authority_spoofing",
+        "near_duplicate_flooding",
+        "contradiction_injection",
+        "answer_hijacking",
+        "query_baiting",
+        "ranking_manipulation",
+        "unknown"
+      ]
+    },
+    "severity": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+    "routing_decision": { "type": "string", "enum": ["allow", "review", "shadow", "quarantine"] },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["field", "snippet", "reason"],
+        "properties": {
+          "field": { "type": "string" },
+          "snippet": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "analyst_notes": { "type": "string" }
+  }
+}
+

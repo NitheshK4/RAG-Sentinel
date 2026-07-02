@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ChunkAudit",
+  "type": "object",
+  "required": [
+    "chunk_id",
+    "risk_label",
+    "severity",
+    "attack_families",
+    "manipulation_targets",
+    "suspicious_signals",
+    "benign_explanations",
+    "requires_neighbor_audit",
+    "evidence",
+    "final_reasoning_summary"
+  ],
+  "properties": {
+    "chunk_id": { "type": "string" },
+    "risk_label": { "type": "string", "enum": ["clean", "suspicious", "poisoned", "ambiguous"] },
+    "severity": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+    "attack_families": { "type": "array", "items": { "type": "string" } },
+    "manipulation_targets": { "type": "array", "items": { "type": "string" } },
+    "suspicious_signals": { "type": "array", "items": { "type": "string" } },
+    "benign_explanations": { "type": "array", "items": { "type": "string" } },
+    "requires_neighbor_audit": { "type": "boolean" },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["snippet", "reason"],
+        "properties": {
+          "snippet": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "final_reasoning_summary": { "type": "string" }
+  }
+}
+

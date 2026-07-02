@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RetrievalInvestigation",
+  "type": "object",
+  "required": [
+    "query",
+    "suspicious_chunk_ids",
+    "dominance_shift_detected",
+    "answer_corruption_detected",
+    "primary_attack_family",
+    "severity",
+    "key_findings",
+    "evidence",
+    "confidence",
+    "next_action"
+  ],
+  "properties": {
+    "query": { "type": "string" },
+    "suspicious_chunk_ids": { "type": "array", "items": { "type": "string" } },
+    "dominance_shift_detected": { "type": "boolean" },
+    "answer_corruption_detected": { "type": "boolean" },
+    "primary_attack_family": { "type": "string" },
+    "severity": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+    "key_findings": { "type": "array", "items": { "type": "string" } },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["chunk_id", "reason", "rank_change", "answer_impact"],
+        "properties": {
+          "chunk_id": { "type": "string" },
+          "reason": { "type": "string" },
+          "rank_change": { "type": "string" },
+          "answer_impact": { "type": "string" }
+        }
+      }
+    },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "next_action": { "type": "string", "enum": ["allow", "review", "shadow", "quarantine"] }
+  }
+}
+

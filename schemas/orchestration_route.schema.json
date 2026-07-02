@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OrchestrationRoute",
+  "type": "object",
+  "required": [
+    "route_name",
+    "prompt_file",
+    "minimal_input_bundle",
+    "skipped_fields",
+    "escalation_required",
+    "execution_notes"
+  ],
+  "properties": {
+    "route_name": { "type": "string" },
+    "prompt_file": { "type": "string" },
+    "minimal_input_bundle": { "type": "object" },
+    "skipped_fields": { "type": "array", "items": { "type": "string" } },
+    "escalation_required": { "type": "boolean" },
+    "execution_notes": { "type": "array", "items": { "type": "string" } }
+  }
+}
+

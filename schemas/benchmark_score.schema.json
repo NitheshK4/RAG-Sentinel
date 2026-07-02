@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BenchmarkScore",
+  "type": "object",
+  "required": [
+    "run_id",
+    "overall_assessment",
+    "strengths",
+    "weaknesses",
+    "attack_family_scores",
+    "answer_protection_assessment",
+    "recommended_next_steps",
+    "release_readiness"
+  ],
+  "properties": {
+    "run_id": { "type": "string" },
+    "overall_assessment": { "type": "string" },
+    "strengths": { "type": "array", "items": { "type": "string" } },
+    "weaknesses": { "type": "array", "items": { "type": "string" } },
+    "attack_family_scores": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["attack_family", "assessment"],
+        "properties": {
+          "attack_family": { "type": "string" },
+          "assessment": { "type": "string" }
+        }
+      }
+    },
+    "answer_protection_assessment": { "type": "string" },
+    "recommended_next_steps": { "type": "array", "items": { "type": "string" } },
+    "release_readiness": { "type": "string", "enum": ["not_ready", "staging_only", "production_candidate"] }
+  }
+}
+

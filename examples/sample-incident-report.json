@@ -1,0 +1,33 @@
+{
+  "incident_id": "inc_2026_0714_01",
+  "title": "Low-trust uploaded policy copy dominated encryption approval retrievals",
+  "executive_summary": "A low-trust uploaded document introduced instruction-like guidance that displaced approved policy chunks and corrupted the final answer for encryption approval queries.",
+  "severity": "high",
+  "attack_family": "authority_spoofing",
+  "scope": [
+    "collection:security-policy",
+    "query-family:vendor-approval"
+  ],
+  "confirmed_findings": [
+    "A low-trust source achieved top-2 retrieval dominance for a sensitive policy query.",
+    "The final answer changed from approved vendors A and B to Vendor Z only."
+  ],
+  "suspected_findings": [
+    "The uploaded file was crafted to appear as official policy guidance."
+  ],
+  "business_impact": "Potential policy misinformation in security-sensitive workflows.",
+  "affected_assets": [
+    "production-vector-index",
+    "security-approval-rag-service"
+  ],
+  "timeline_summary": [
+    "Upload occurred on 2026-06-14.",
+    "Abnormal retrieval behavior detected during replay on 2026-07-01."
+  ],
+  "recommended_immediate_actions": [
+    "Quarantine source src_0142.",
+    "Block chunks c_991 and c_992 from production retrieval.",
+    "Replay high-risk approval queries after reindex."
+  ]
+}
+

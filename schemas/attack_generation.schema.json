@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AttackGeneration",
+  "type": "object",
+  "required": [
+    "attack_family",
+    "difficulty_level",
+    "mutated_chunk",
+    "mutation_summary",
+    "attack_goal",
+    "target_query_family",
+    "benchmark_label_notes"
+  ],
+  "properties": {
+    "attack_family": {
+      "type": "string",
+      "enum": [
+        "instruction_injection",
+        "authority_spoofing",
+        "near_duplicate_flooding",
+        "contradiction_injection",
+        "answer_hijacking",
+        "query_baiting",
+        "ranking_manipulation"
+      ]
+    },
+    "difficulty_level": { "type": "string", "enum": ["easy", "medium", "hard"] },
+    "mutated_chunk": { "type": "string" },
+    "mutation_summary": { "type": "string" },
+    "attack_goal": { "type": "string" },
+    "target_query_family": { "type": "string" },
+    "benchmark_label_notes": { "type": "array", "items": { "type": "string" } }
+  }
+}
+
