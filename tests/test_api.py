@@ -265,3 +265,20 @@ def test_orchestration_endpoint(client):
     data = response.json()
     assert "route_name" in data
     assert "minimal_input_bundle" in data
+
+def test_extract_json_block():
+    from backend.core.llm_client import extract_json_block
+    import json
+
+    # Test cases:
+    # 1. Clean JSON
+    assert json.loads(extract_json_block('{"a": 1}')) == {"a": 1}
+
+    # 2. Markdown fenced JSON
+    assert json.loads(extract_json_block('```json\n{"a": 1}\n```')) == {"a": 1}
+
+    # 3. Conversational prefix and suffix
+    assert json.loads(extract_json_block('Here is your result:\n{"a": 1}\nHope this helps!')) == {"a": 1}
+
+    # 4. List format JSON
+    assert json.loads(extract_json_block('Conversation text:\n[{"a": 1}, {"b": 2}]\nMore text')) == [{"a": 1}, {"b": 2}]

@@ -336,6 +336,42 @@ DEMO_RESPONSES: dict[str, Any] = {
 }
 
 
+def extract_json_block(text: str) -> str:
+    """
+    Robustly extract the JSON payload from a raw LLM response text block.
+    Tries parsing clean text, then isolates dictionary or list substrings if that fails.
+    """
+    text_clean = re.sub(r"^```(?:json)?\s*", "", text.strip())
+    text_clean = re.sub(r"\s*```$", "", text_clean)
+
+    try:
+        json.loads(text_clean)
+        return text_clean
+    except json.JSONDecodeError:
+        pass
+
+    dict_start = text.find('{')
+    dict_end = text.rfind('}')
+
+    list_start = text.find('[')
+    list_end = text.rfind(']')
+
+    candidates = []
+    if dict_start != -1 and dict_end != -1 and dict_start < dict_end:
+        candidates.append(text[dict_start:dict_end+1])
+    if list_start != -1 and list_end != -1 and list_start < list_end:
+        candidates.append(text[list_start:list_end+1])
+
+    for cand in candidates:
+        try:
+            json.loads(cand)
+            return cand
+        except json.JSONDecodeError:
+            pass
+
+    return text_clean
+
+
 async def call_llm(prompt: str, response_key: str) -> dict:
     """
     Call the Gemini API with the given prompt and return parsed JSON.
@@ -364,11 +400,10 @@ async def call_llm(prompt: str, response_key: str) -> dict:
         # Extract text content
         text = data["candidates"][0]["content"]["parts"][0]["text"]
 
-        # Strip markdown fences if present
-        text = re.sub(r"^```(?:json)?\s*", "", text.strip())
-        text = re.sub(r"\s*```$", "", text)
+        # Robustly extract JSON block
+        json_text = extract_json_block(text)
 
-        return json.loads(text)
+        return json.loads(json_text)
     except Exception as e:
         logger.error(f"Live LLM request failed ({e}). Falling back to demo data for: {response_key}")
         fallback = DEMO_RESPONSES.get(response_key, {})
