@@ -225,6 +225,10 @@
           <div class="result-header">
             <span id="quick-result-title" class="result-title"></span>
             <div id="quick-result-badges" class="badge-row"></div>
+            <div class="result-actions" style="margin-left: auto; display: flex; gap: 8px; align-items: center; margin-right: 12px;">
+              <button class="btn-demo" onclick="exportResult('quick', 'markdown')" style="padding: 4px 10px; font-size: 11px;">Export MD</button>
+              <button class="btn-demo" onclick="exportResult('quick', 'json')" style="padding: 4px 10px; font-size: 11px;">Export JSON</button>
+            </div>
             <button class="close-btn" onclick="closeQuickResult()">✕</button>
           </div>
           <div id="quick-result-content" class="result-content"></div>
@@ -306,6 +310,10 @@
             <div class="result-header">
               <span id="pipeline-result-title" class="result-title"></span>
               <div id="pipeline-result-badges" class="badge-row"></div>
+              <div class="result-actions" style="margin-left: auto; display: flex; gap: 8px; align-items: center;">
+                <button class="btn-demo" onclick="exportResult('pipeline', 'markdown')" style="padding: 4px 10px; font-size: 11px;">Export MD</button>
+                <button class="btn-demo" onclick="exportResult('pipeline', 'json')" style="padding: 4px 10px; font-size: 11px;">Export JSON</button>
+              </div>
             </div>
             <div id="pipeline-result-content" class="result-content"></div>
           </div>

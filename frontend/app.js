@@ -246,6 +246,10 @@ const STAGES = {
 // ── State ──────────────────────────────────────────────────────────────────
 let currentStage = 'source_triage';
 let incidentHistory = [];
+let lastQuickResult = null;
+let lastQuickStage = '';
+let lastPipelineResult = null;
+let lastPipelineStage = '';
 
 // Visualizer State
 let canvas = null;
@@ -460,6 +464,8 @@ async function runPipeline() {
     }
 
     const data = await res.json();
+    lastPipelineResult = data;
+    lastPipelineStage = currentStage;
     showPipelineResult(stage.title, data);
 
     // Add to incident history for reporting stages
@@ -494,6 +500,8 @@ async function quickRun(key) {
   try {
     const res = await fetch(`${API}/api/v1/demo/responses/${key}`);
     const data = await res.json();
+    lastQuickResult = data;
+    lastQuickStage = key;
 
     const panel = document.getElementById('quick-result-panel');
     const title = document.getElementById('quick-result-title');
@@ -834,6 +842,9 @@ function showIncidentDetail(idx) {
   const entry = incidentHistory[idx];
   if (!entry) return;
 
+  lastQuickResult = entry.data;
+  lastQuickStage = entry.stage;
+
   const panel = document.getElementById('quick-result-panel');
   document.getElementById('quick-result-title').textContent = entry.data.title || 'Incident Detail';
   document.getElementById('quick-result-badges').innerHTML = buildBadges(entry.data);
@@ -843,6 +854,79 @@ function showIncidentDetail(idx) {
   // Switch to dashboard to show result
   switchView('dashboard');
   panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function convertToMarkdown(stage, data) {
+  let md = `# RAG Sentinel — Security Report\n`;
+  md += `* **Pipeline Stage:** ${stage}\n`;
+  md += `* **Generated:** ${new Date().toLocaleString()}\n\n`;
+  md += `---\n\n`;
+
+  for (const [key, val] of Object.entries(data)) {
+    const title = key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    md += `## ${title}\n\n`;
+
+    if (Array.isArray(val)) {
+      if (val.length === 0) {
+        md += `*None*\n\n`;
+      } else if (typeof val[0] === 'object') {
+        const keys = Object.keys(val[0]);
+        const headers = keys.map(k => k.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '));
+        md += `| ${headers.join(' | ')} |\n`;
+        md += `| ${keys.map(() => '---').join(' | ')} |\n`;
+        for (const item of val) {
+          const row = keys.map(k => {
+            const itemVal = item[k];
+            return typeof itemVal === 'object' ? JSON.stringify(itemVal) : String(itemVal).replace(/\|/g, '\\|');
+          });
+          md += `| ${row.join(' | ')} |\n`;
+        }
+        md += `\n`;
+      } else {
+        for (const item of val) {
+          md += `- ${item}\n`;
+        }
+        md += `\n`;
+      }
+    } else if (typeof val === 'object' && val !== null) {
+      md += `\`\`\`json\n${JSON.stringify(val, null, 2)}\n\`\`\`\n\n`;
+    } else {
+      md += `${val}\n\n`;
+    }
+  }
+  return md;
+}
+
+function exportResult(type, format) {
+  const data = type === 'quick' ? lastQuickResult : lastPipelineResult;
+  const stage = type === 'quick' ? lastQuickStage : lastPipelineStage;
+
+  if (!data) {
+    showToast('No result available to export', 'warning');
+    return;
+  }
+
+  let content = '';
+  let filename = `rag_sentinel_${stage}_${new Date().toISOString().slice(0, 10)}`;
+
+  if (format === 'json') {
+    content = JSON.stringify(data, null, 2);
+    filename += '.json';
+  } else if (format === 'markdown') {
+    content = convertToMarkdown(stage, data);
+    filename += '.md';
+  }
+
+  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast(`Successfully exported ${format.toUpperCase()}`, 'success');
 }
 
 // ── Architecture Detail ────────────────────────────────────────────────────
