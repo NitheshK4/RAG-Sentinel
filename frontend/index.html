@@ -431,7 +431,17 @@
         <h2 class="section-title">Incident Feed</h2>
         <p class="section-desc">Live incident records and investigation history.</p>
         
-        <div class="incident-toolbar" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; gap:16px;">
+        <div class="incident-toolbar" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; gap:16px; flex-wrap:wrap;">
+          <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+            <input type="text" id="incident-search" placeholder="Search incidents..." style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.05); color: var(--text-primary); font-size: 13px; min-width: 200px;" oninput="refreshIncidentFeed()"/>
+            <select id="incident-severity-filter" style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.05); color: var(--text-primary); font-size: 13px; cursor: pointer; outline:none;" onchange="refreshIncidentFeed()">
+              <option value="all" style="background:#1a1f2c; color:#fff;">All Severities</option>
+              <option value="critical" style="background:#1a1f2c; color:#ff4d4d;">Critical</option>
+              <option value="high" style="background:#1a1f2c; color:#ff944d;">High</option>
+              <option value="medium" style="background:#1a1f2c; color:#ffc83b;">Medium</option>
+              <option value="low" style="background:#1a1f2c; color:#a3b8cc;">Low</option>
+            </select>
+          </div>
           <div style="display:flex; gap:10px;">
             <button class="btn-demo" id="btn-clear-incidents" onclick="clearIncidentHistoryUI()">Clear History</button>
           </div>

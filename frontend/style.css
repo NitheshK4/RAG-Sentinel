@@ -1232,6 +1232,18 @@ body::before {
   --stop-end: rgba(0, 212, 255, 0.0);
 }
 
+/* Incident toolbar styling */
+.incident-toolbar input,
+.incident-toolbar select {
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.incident-toolbar input:focus,
+.incident-toolbar select:focus {
+  border-color: var(--teal) !important;
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.2);
+  outline: none;
+}
+
 /* ── Responsive ── */
 @media (max-width: 1024px) {
   .pipeline-layout { grid-template-columns: 1fr; }

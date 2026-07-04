@@ -820,8 +820,6 @@ async function clearIncidentHistoryUI() {
     console.error('Error clearing incident history:', e);
   }
 }
-
-
 function refreshIncidentFeed() {
   const feed = document.getElementById('incident-feed');
   if (!incidentHistory.length) {
@@ -831,7 +829,39 @@ function refreshIncidentFeed() {
     return;
   }
 
-  feed.innerHTML = incidentHistory.map(entry => {
+  // Get filter inputs
+  const searchInput = document.getElementById('incident-search');
+  const severityFilter = document.getElementById('incident-severity-filter');
+  const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+  const filterSev = severityFilter ? severityFilter.value.toLowerCase() : 'all';
+
+  const filteredHistory = incidentHistory.filter(entry => {
+    const d = entry.data;
+    const sev = (d.severity || d.recommended_severity || 'low').toLowerCase();
+    const title = (d.title || d.primary_hypothesis || `${entry.stage} result`).toLowerCase();
+    const summary = (d.executive_summary || d.primary_hypothesis || d.overall_assessment || '').toLowerCase();
+    const family = (d.attack_family || d.primary_attack_family || '').toLowerCase();
+
+    // Severity check
+    if (filterSev !== 'all' && sev !== filterSev) return false;
+
+    // Search check
+    if (query) {
+      const matchText = `${title} ${summary} ${family} ${entry.stage}`;
+      if (!matchText.includes(query)) return false;
+    }
+
+    return true;
+  });
+
+  if (!filteredHistory.length) {
+    feed.innerHTML = `<div style="text-align:center;padding:48px;color:var(--text-muted)">
+      No incidents match the search criteria.
+    </div>`;
+    return;
+  }
+
+  feed.innerHTML = filteredHistory.map(entry => {
     const d = entry.data;
     const sev = d.severity || d.recommended_severity || 'low';
     const title = d.title || d.primary_hypothesis || `${entry.stage} result`;
