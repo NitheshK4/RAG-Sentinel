@@ -4,7 +4,10 @@ These routes allow the analyst dashboard to demonstrate every pipeline
 without requiring an LLM API key.
 """
 import json
+import csv
+import io
 from fastapi import APIRouter
+from fastapi.responses import StreamingResponse
 from backend.core.config import EXAMPLES_DIR, DEMO_MODE
 from backend.core.llm_client import DEMO_RESPONSES
 
@@ -84,5 +87,43 @@ async def clear_incidents():
     with _incidents_lock:
         _incidents.clear()
     return {"status": "success"}
+
+
+@router.get("/incidents/export")
+async def export_incidents(format: str = "json"):
+    """Export current incidents as JSON or CSV file download."""
+    with _incidents_lock:
+        data = list(_incidents)
+
+    if format == "csv":
+        output = io.StringIO()
+        writer = csv.writer(output)
+        # Write headers
+        writer.writerow(["Timestamp", "Stage", "Title", "Severity", "Attack Family", "Summary"])
+        # Write rows
+        for item in data:
+            d = item.get("data", {})
+            writer.writerow([
+                item.get("ts", ""),
+                item.get("stage", ""),
+                d.get("title") or d.get("primary_hypothesis") or f"{item.get('stage')} result",
+                d.get("severity") or d.get("recommended_severity") or "low",
+                d.get("attack_family") or d.get("primary_attack_family") or "",
+                d.get("executive_summary") or d.get("primary_hypothesis") or d.get("overall_assessment") or ""
+            ])
+        output.seek(0)
+        return StreamingResponse(
+            io.BytesIO(output.getvalue().encode("utf-8")),
+            media_type="text/csv",
+            headers={"Content-Disposition": "attachment; filename=rag_sentinel_incidents.csv"}
+        )
+    else:
+        # Default JSON
+        return StreamingResponse(
+            io.BytesIO(json.dumps(data, indent=2).encode("utf-8")),
+            media_type="application/json",
+            headers={"Content-Disposition": "attachment; filename=rag_sentinel_incidents.json"}
+        )
+
 
 

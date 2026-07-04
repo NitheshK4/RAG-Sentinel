@@ -820,6 +820,15 @@ async function clearIncidentHistoryUI() {
     console.error('Error clearing incident history:', e);
   }
 }
+
+function exportIncidentsFormat(format) {
+  if (!incidentHistory || incidentHistory.length === 0) {
+    alert("No incidents to export!");
+    return;
+  }
+  window.open(`${API}/api/v1/demo/incidents/export?format=${format}`, '_blank');
+}
+
 function refreshIncidentFeed() {
   const feed = document.getElementById('incident-feed');
   if (!incidentHistory.length) {
