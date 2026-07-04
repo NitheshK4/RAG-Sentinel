@@ -430,6 +430,13 @@
       <section class="section">
         <h2 class="section-title">Incident Feed</h2>
         <p class="section-desc">Live incident records and investigation history.</p>
+        
+        <div class="incident-toolbar" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; gap:16px;">
+          <div style="display:flex; gap:10px;">
+            <button class="btn-demo" id="btn-clear-incidents" onclick="clearIncidentHistoryUI()">Clear History</button>
+          </div>
+        </div>
+
         <div id="incident-feed" class="incident-feed">
           <!-- Populated by JS -->
         </div>

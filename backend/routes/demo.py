@@ -77,3 +77,12 @@ async def add_incident(incident: dict[str, Any]):
             _incidents.pop()
     return {"status": "success"}
 
+
+@router.delete("/incidents")
+async def clear_incidents():
+    """Clear all incident records from backend memory."""
+    with _incidents_lock:
+        _incidents.clear()
+    return {"status": "success"}
+
+

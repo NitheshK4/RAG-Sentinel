@@ -806,6 +806,21 @@ async function loadIncidentHistory() {
   }
 }
 
+async function clearIncidentHistoryUI() {
+  if (!confirm('Are you sure you want to clear all incidents?')) return;
+  try {
+    const res = await fetch(`${API}/api/v1/demo/incidents`, { method: 'DELETE' });
+    if (res.ok) {
+      incidentHistory = [];
+      refreshIncidentFeed();
+    } else {
+      console.error('Failed to clear incident history on backend');
+    }
+  } catch (e) {
+    console.error('Error clearing incident history:', e);
+  }
+}
+
 
 function refreshIncidentFeed() {
   const feed = document.getElementById('incident-feed');
