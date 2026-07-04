@@ -126,4 +126,43 @@ async def export_incidents(format: str = "json"):
         )
 
 
+_settings = {
+    "cosine_similarity_threshold": 0.75,
+    "anomaly_risk_tolerance": "medium",
+    "neighbor_audit_depth": 3,
+    "automatic_quarantine": False
+}
+_settings_lock = threading.Lock()
+
+
+@router.get("/settings")
+async def get_settings():
+    """Get the current dynamic security detection parameters."""
+    with _settings_lock:
+        return _settings
+
+
+@router.post("/settings")
+async def update_settings(settings: dict[str, Any]):
+    """Update dynamic security detection parameters."""
+    with _settings_lock:
+        # Validate and convert types if needed
+        if "cosine_similarity_threshold" in settings:
+            try:
+                settings["cosine_similarity_threshold"] = float(settings["cosine_similarity_threshold"])
+            except ValueError:
+                pass
+        if "neighbor_audit_depth" in settings:
+            try:
+                settings["neighbor_audit_depth"] = int(settings["neighbor_audit_depth"])
+            except ValueError:
+                pass
+        if "automatic_quarantine" in settings:
+            settings["automatic_quarantine"] = bool(settings["automatic_quarantine"])
+
+        _settings.update(settings)
+    return {"status": "success", "settings": _settings}
+
+
+
 

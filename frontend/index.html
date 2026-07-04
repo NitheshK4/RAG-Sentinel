@@ -93,6 +93,42 @@
         </div>
       </section>
 
+      <!-- Security Parameters Tuning (Settings) -->
+      <section class="section" style="margin-bottom: 24px;">
+        <h2 class="section-title">Security Parameters Tuning</h2>
+        <p class="section-desc">Configure dynamic poisoning detection thresholds and policies in real-time.</p>
+        <div class="settings-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: 12px; padding: 20px; backdrop-filter: blur(10px);">
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <label style="font-size:12px; color:var(--text-secondary); font-weight:500; display:flex; justify-content:space-between;">
+              <span>Cosine Similarity Threshold</span>
+              <span id="similarity-val" style="color:var(--teal)">0.75</span>
+            </label>
+            <input type="range" id="input-similarity" min="0.5" max="0.99" step="0.01" value="0.75" style="width:100%; cursor:pointer;" oninput="updateSettingsUI()"/>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <label style="font-size:12px; color:var(--text-secondary); font-weight:500;">Anomaly Risk Tolerance</label>
+            <select id="input-tolerance" style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.05); color: var(--text-primary); font-size: 13px; cursor: pointer; outline:none;" onchange="updateSettingsUI()">
+              <option value="low" style="background:#1a1f2c; color:#ff4d4d;">Low (Strict)</option>
+              <option value="medium" style="background:#1a1f2c; color:#ffc83b;">Medium (Balanced)</option>
+              <option value="high" style="background:#1a1f2c; color:#a3b8cc;">High (Permissive)</option>
+            </select>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <label style="font-size:12px; color:var(--text-secondary); font-weight:500; display:flex; justify-content:space-between;">
+              <span>Neighbor Audit Depth</span>
+              <span id="depth-val" style="color:var(--teal)">3</span>
+            </label>
+            <input type="range" id="input-depth" min="1" max="10" step="1" value="3" style="width:100%; cursor:pointer;" oninput="updateSettingsUI()"/>
+          </div>
+          <div style="display:flex; flex-direction:column; justify-content:center; gap:8px;">
+            <label style="font-size:12px; color:var(--text-secondary); font-weight:500; display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none;">
+              <input type="checkbox" id="input-quarantine" style="width:16px; height:16px; cursor:pointer;" onchange="updateSettingsUI()"/>
+              <span>Auto-Quarantine Threats</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
       <!-- Telemetry Dashboard -->
       <section class="section">
         <h2 class="section-title">Live Telemetry & Index Health</h2>

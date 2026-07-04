@@ -268,8 +268,59 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupNavigation();
   selectStage('source_triage', document.querySelector('.stage-btn'));
   await loadIncidentHistory();
+  await loadSettings();
   initVisualizer();
 });
+
+async function loadSettings() {
+  try {
+    const res = await fetch(`${API}/api/v1/demo/settings`);
+    const data = await res.json();
+    if (data) {
+      if (document.getElementById('input-similarity')) {
+        document.getElementById('input-similarity').value = data.cosine_similarity_threshold;
+        document.getElementById('similarity-val').textContent = data.cosine_similarity_threshold;
+      }
+      if (document.getElementById('input-tolerance')) {
+        document.getElementById('input-tolerance').value = data.anomaly_risk_tolerance;
+      }
+      if (document.getElementById('input-depth')) {
+        document.getElementById('input-depth').value = data.neighbor_audit_depth;
+        document.getElementById('depth-val').textContent = data.neighbor_audit_depth;
+      }
+      if (document.getElementById('input-quarantine')) {
+        document.getElementById('input-quarantine').checked = data.automatic_quarantine;
+      }
+    }
+  } catch (e) {
+    console.warn('Could not load settings:', e);
+  }
+}
+
+async function updateSettingsUI() {
+  const similarity = document.getElementById('input-similarity').value;
+  const tolerance = document.getElementById('input-tolerance').value;
+  const depth = document.getElementById('input-depth').value;
+  const quarantine = document.getElementById('input-quarantine').checked;
+
+  document.getElementById('similarity-val').textContent = similarity;
+  document.getElementById('depth-val').textContent = depth;
+
+  try {
+    await fetch(`${API}/api/v1/demo/settings`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        cosine_similarity_threshold: similarity,
+        anomaly_risk_tolerance: tolerance,
+        neighbor_audit_depth: depth,
+        automatic_quarantine: quarantine
+      })
+    });
+  } catch (e) {
+    console.warn('Could not save settings:', e);
+  }
+}
 
 async function checkMode() {
   try {
