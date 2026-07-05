@@ -282,3 +282,85 @@ def test_extract_json_block():
 
     # 4. List format JSON
     assert json.loads(extract_json_block('Conversation text:\n[{"a": 1}, {"b": 2}]\nMore text')) == [{"a": 1}, {"b": 2}]
+
+
+def test_demo_incidents_clear(client):
+    # Add a temporary incident to make sure it's not empty
+    client.post("/api/v1/demo/incidents", json={
+        "stage": "incident_report",
+        "data": {"incident_id": "temp_1", "severity": "low"},
+        "ts": "2026-07-04T12:00:00Z"
+    })
+    
+    # Get current list
+    res = client.get("/api/v1/demo/incidents")
+    assert res.status_code == 200
+    assert len(res.json()) > 0
+    
+    # Clear the feed
+    clear_res = client.delete("/api/v1/demo/incidents")
+    assert clear_res.status_code == 200
+    assert clear_res.json() == {"status": "success"}
+    
+    # Verify count is now 0
+    verify_res = client.get("/api/v1/demo/incidents")
+    assert verify_res.status_code == 200
+    assert len(verify_res.json()) == 0
+
+
+def test_demo_incidents_export(client):
+    # Seed with one incident
+    client.post("/api/v1/demo/incidents", json={
+        "stage": "incident_report",
+        "data": {"incident_id": "temp_export", "severity": "high", "title": "Test Export"},
+        "ts": "2026-07-04T12:00:00Z"
+    })
+    
+    # Test export as JSON
+    res_json = client.get("/api/v1/demo/incidents/export?format=json")
+    assert res_json.status_code == 200
+    assert "application/json" in res_json.headers["content-type"]
+    assert "attachment" in res_json.headers["content-disposition"]
+    data = res_json.json()
+    assert len(data) > 0
+    assert data[0]["data"]["incident_id"] == "temp_export"
+
+    # Test export as CSV
+    res_csv = client.get("/api/v1/demo/incidents/export?format=csv")
+    assert res_csv.status_code == 200
+    assert "text/csv" in res_csv.headers["content-type"]
+    assert "attachment" in res_csv.headers["content-disposition"]
+    csv_text = res_csv.text
+    assert "Timestamp,Stage,Title,Severity,Attack Family,Summary" in csv_text
+    assert "Test Export" in csv_text
+
+
+
+def test_demo_settings_endpoints(client):
+    # Test GET settings
+    res = client.get("/api/v1/demo/settings")
+    assert res.status_code == 200
+    settings = res.json()
+    assert "cosine_similarity_threshold" in settings
+    assert settings["cosine_similarity_threshold"] == 0.75
+
+    # Test POST settings update
+    payload = {
+        "cosine_similarity_threshold": 0.85,
+        "anomaly_risk_tolerance": "high",
+        "neighbor_audit_depth": 5,
+        "automatic_quarantine": True
+    }
+    update_res = client.post("/api/v1/demo/settings", json=payload)
+    assert update_res.status_code == 200
+    assert update_res.json()["status"] == "success"
+    
+    # Verify settings updated
+    verify_res = client.get("/api/v1/demo/settings")
+    assert verify_res.status_code == 200
+    updated_settings = verify_res.json()
+    assert updated_settings["cosine_similarity_threshold"] == 0.85
+    assert updated_settings["anomaly_risk_tolerance"] == "high"
+    assert updated_settings["neighbor_audit_depth"] == 5
+    assert updated_settings["automatic_quarantine"] is True
+
