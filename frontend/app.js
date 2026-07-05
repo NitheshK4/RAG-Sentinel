@@ -243,7 +243,6 @@ const STAGES = {
 };
 
 // ── State ──────────────────────────────────────────────────────────────────
-// ── State ──────────────────────────────────────────────────────────────────
 let currentStage = 'source_triage';
 let incidentHistory = [];
 let lastQuickResult = null;
@@ -545,7 +544,8 @@ async function runPipeline() {
 
 // ── Quick Run ──────────────────────────────────────────────────────────────
 async function quickRun(key) {
-  const btn = document.getElementById(`qr-${key.replace('_', '-')}`);
+  // replaceAll ensures multi-underscore keys like 'attack_hypothesis' are fully converted
+  const btn = document.getElementById(`qr-${key.replaceAll('_', '-')}`);
   if (btn) btn.style.opacity = '0.5';
 
   try {
@@ -921,7 +921,9 @@ function refreshIncidentFeed() {
     return;
   }
 
-  feed.innerHTML = filteredHistory.map(entry => {
+  feed.innerHTML = filteredHistory.map((entry, filteredIdx) => {
+    // Compute the original index in incidentHistory so showIncidentDetail reads the correct item
+    const origIdx = incidentHistory.indexOf(entry);
     const d = entry.data;
     const sev = d.severity || d.recommended_severity || 'low';
     const title = d.title || d.primary_hypothesis || `${entry.stage} result`;
@@ -930,7 +932,7 @@ function refreshIncidentFeed() {
     const ts = new Date(entry.ts).toLocaleString();
     const demoTag = entry.demo ? '<span class="badge badge-label" style="font-size:10px">Demo</span>' : '';
 
-    return `<div class="incident-card sev-${sev}" onclick="showIncidentDetail(${incidentHistory.indexOf(entry)})">
+    return `<div class="incident-card sev-${sev}" onclick="showIncidentDetail(${origIdx})">
       <div class="incident-title">${esc(title)}</div>
       <div class="incident-meta">
         <span>${esc(ts)}</span>
