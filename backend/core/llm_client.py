@@ -406,11 +406,14 @@ async def call_llm(prompt: str, response_key: str) -> dict:
         return json.loads(json_text)
     except Exception as e:
         logger.error(f"Live LLM request failed ({e}). Falling back to demo data for: {response_key}")
-        fallback = DEMO_RESPONSES.get(response_key, {})
-        # Tag it so the UI knows it is a fallback due to quota
+        # Make a shallow copy so we never mutate the shared DEMO_RESPONSES dict.
+        # Without this, repeated failures would keep appending the fallback tag.
+        original = DEMO_RESPONSES.get(response_key, {})
+        fallback = dict(original) if isinstance(original, dict) else original
         if isinstance(fallback, dict):
-            fallback["analyst_notes"] = fallback.get("analyst_notes", "") + f" [Fallback triggered: Live API rate limited/quota exceeded]"
-            fallback["overall_assessment"] = fallback.get("overall_assessment", "") + f" [Fallback triggered: Live API rate limited/quota exceeded]"
-            fallback["executive_summary"] = fallback.get("executive_summary", "") + f" [Fallback triggered: Live API rate limited/quota exceeded]"
+            tag = " [Fallback triggered: Live API rate limited/quota exceeded]"
+            fallback["analyst_notes"] = fallback.get("analyst_notes", "") + tag
+            fallback["overall_assessment"] = fallback.get("overall_assessment", "") + tag
+            fallback["executive_summary"] = fallback.get("executive_summary", "") + tag
         return fallback
 
