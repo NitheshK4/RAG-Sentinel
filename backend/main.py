@@ -10,7 +10,7 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 from backend.core.config import APP_TITLE, APP_VERSION, API_PREFIX, DEMO_MODE
 from backend.routes import ingestion, detection, evaluation, reporting, orchestrator, demo
@@ -54,8 +54,6 @@ app.include_router(reporting.router, prefix=API_PREFIX)
 app.include_router(orchestrator.router, prefix=API_PREFIX)
 app.include_router(demo.router, prefix=API_PREFIX)
 
-
-from fastapi.responses import JSONResponse
 
 @app.exception_handler(FileNotFoundError)
 async def filenotfound_exception_handler(request, exc):
