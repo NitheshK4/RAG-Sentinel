@@ -6,6 +6,8 @@ without requiring an LLM API key.
 import json
 import csv
 import io
+import threading
+from typing import Any
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from backend.core.config import EXAMPLES_DIR, DEMO_MODE
@@ -49,9 +51,6 @@ async def demo_response(key: str):
         return {"error": f"No demo response for key: {key}", "available_keys": list(DEMO_RESPONSES.keys())}
     return DEMO_RESPONSES[key]
 
-
-import threading
-from typing import Any
 
 # In-memory database of incidents
 _incidents: list[dict[str, Any]] = []
@@ -158,7 +157,12 @@ async def update_settings(settings: dict[str, Any]):
             except ValueError:
                 pass
         if "automatic_quarantine" in settings:
-            settings["automatic_quarantine"] = bool(settings["automatic_quarantine"])
+            v = settings["automatic_quarantine"]
+            # Support both native bool and string representations (e.g. "false" must not be truthy)
+            if isinstance(v, str):
+                settings["automatic_quarantine"] = v.lower() in ("true", "1", "yes")
+            else:
+                settings["automatic_quarantine"] = bool(v)
 
         _settings.update(settings)
     return {"status": "success", "settings": _settings}
