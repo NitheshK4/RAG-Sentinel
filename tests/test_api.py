@@ -364,3 +364,66 @@ def test_demo_settings_endpoints(client):
     assert updated_settings["neighbor_audit_depth"] == 5
     assert updated_settings["automatic_quarantine"] is True
 
+
+def test_demo_settings_endpoints_invalid_keys(client):
+    # Test POST settings update with invalid keys (should fail with 400)
+    payload = {
+        "invalid_key_foo": 123
+    }
+    update_res = client.post("/api/v1/demo/settings", json=payload)
+    assert update_res.status_code == 400
+    assert "Invalid settings key(s)" in update_res.json()["detail"]
+
+
+def test_demo_settings_endpoints_invalid_values(client):
+    # Test POST settings update with invalid similarity threshold (not a float)
+    update_res = client.post("/api/v1/demo/settings", json={"cosine_similarity_threshold": "not-a-float"})
+    assert update_res.status_code == 400
+    assert "cosine_similarity_threshold must be a float" in update_res.json()["detail"]
+
+    # Test POST settings update with out-of-bounds similarity threshold
+    update_res = client.post("/api/v1/demo/settings", json={"cosine_similarity_threshold": 1.5})
+    assert update_res.status_code == 400
+
+    # Test POST settings update with negative neighbor audit depth
+    update_res = client.post("/api/v1/demo/settings", json={"neighbor_audit_depth": -1})
+    assert update_res.status_code == 400
+    assert "neighbor_audit_depth must be a positive integer" in update_res.json()["detail"]
+
+    # Test POST settings update with invalid automatic quarantine string
+    update_res = client.post("/api/v1/demo/settings", json={"automatic_quarantine": "invalid-string"})
+    assert update_res.status_code == 400
+    assert "automatic_quarantine must be a boolean" in update_res.json()["detail"]
+
+    # Test POST settings update with invalid anomaly risk tolerance
+    update_res = client.post("/api/v1/demo/settings", json={"anomaly_risk_tolerance": "ultra-strict"})
+    assert update_res.status_code == 400
+    assert "anomaly_risk_tolerance must be" in update_res.json()["detail"]
+
+
+def test_demo_incidents_export_malformed(client):
+    # Clear incidents first
+    client.delete("/api/v1/demo/incidents")
+
+    # Seed with malformed records:
+    # 1. Non-dict item (a string)
+    # 2. Dict item with missing/non-dict 'data'
+    # 3. Valid dict item
+    client.post("/api/v1/demo/incidents", json={"stage": "invalid_structure", "ts": "2026-07-04T12:00:00Z"})
+    client.post("/api/v1/demo/incidents", json={
+        "stage": "valid_structure",
+        "data": {"incident_id": "malformed_test", "title": "Malformed Test Title"},
+        "ts": "2026-07-04T12:00:00Z"
+    })
+    
+    # Test CSV export
+    res_csv = client.get("/api/v1/demo/incidents/export?format=csv")
+    assert res_csv.status_code == 200
+    assert "text/csv" in res_csv.headers["content-type"]
+    csv_text = res_csv.text
+    
+    # Verify the headers are written and the valid structure row is present, while no crash occurred
+    assert "Timestamp,Stage,Title,Severity,Attack Family,Summary" in csv_text
+    assert "Malformed Test Title" in csv_text
+
+
