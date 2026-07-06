@@ -260,6 +260,10 @@ let offsetY = 0;
 let selectedNode = null;
 let simPreset = 'clean';
 let isSimulating = false;
+let isDragging = false;
+let dragStartX = 0;
+let dragStartY = 0;
+let totalDragDist = 0;
 
 // ── Init ───────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
@@ -1115,9 +1119,11 @@ function initVisualizer() {
   if (!canvas) return;
   ctx = canvas.getContext('2d');
 
-  // Mouse move / click listeners
-  canvas.addEventListener('click', handleCanvasClick);
-  canvas.addEventListener('mousemove', handleCanvasHover);
+  // Mouse drag / click listeners for panning
+  canvas.addEventListener('mousedown', handleMouseDown);
+  canvas.addEventListener('mousemove', handleMouseMove);
+  canvas.addEventListener('mouseup', handleMouseUp);
+  canvas.addEventListener('mouseleave', handleMouseLeave);
 
   generateMockVectors();
   loadSimPreset('clean');
@@ -1296,6 +1302,39 @@ function resetCanvas() {
 }
 
 // ── Interactive Events ─────────────────────────────────────────────────────
+function handleMouseDown(e) {
+  isDragging = true;
+  dragStartX = e.clientX;
+  dragStartY = e.clientY;
+  totalDragDist = 0;
+}
+
+function handleMouseMove(e) {
+  if (isDragging) {
+    const dx = e.clientX - dragStartX;
+    const dy = e.clientY - dragStartY;
+    offsetX += dx / zoom;
+    offsetY += dy / zoom;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    totalDragDist += Math.hypot(dx, dy);
+  }
+  handleCanvasHover(e);
+}
+
+function handleMouseUp(e) {
+  if (isDragging) {
+    isDragging = false;
+    if (totalDragDist < 5) {
+      handleCanvasClick(e);
+    }
+  }
+}
+
+function handleMouseLeave(e) {
+  isDragging = false;
+}
+
 function handleCanvasClick(e) {
   const rect = canvas.getBoundingClientRect();
   const mouseX = e.clientX - rect.left;
@@ -1341,7 +1380,13 @@ function handleCanvasHover(e) {
     }
   });
 
-  canvas.style.cursor = hoverNode ? 'pointer' : 'crosshair';
+  if (isDragging) {
+    canvas.style.cursor = 'grabbing';
+  } else if (hoverNode) {
+    canvas.style.cursor = 'pointer';
+  } else {
+    canvas.style.cursor = 'grab';
+  }
 }
 
 function showInspectorDetails(node) {
