@@ -8,7 +8,7 @@ import csv
 import io
 import threading
 from typing import Any
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 from backend.core.config import EXAMPLES_DIR, DEMO_MODE
 from backend.core.llm_client import DEMO_RESPONSES
@@ -101,7 +101,11 @@ async def export_incidents(format: str = "json"):
         writer.writerow(["Timestamp", "Stage", "Title", "Severity", "Attack Family", "Summary"])
         # Write rows
         for item in data:
-            d = item.get("data", {})
+            if not isinstance(item, dict):
+                continue
+            d = item.get("data")
+            if not isinstance(d, dict):
+                d = {}
             writer.writerow([
                 item.get("ts", ""),
                 item.get("stage", ""),
@@ -145,26 +149,69 @@ async def get_settings():
 async def update_settings(settings: dict[str, Any]):
     """Update dynamic security detection parameters."""
     with _settings_lock:
-        # Validate and convert types if needed
+        # Filter only valid keys
+        invalid_keys = [k for k in settings if k not in _settings]
+        if invalid_keys:
+            raise HTTPException(status_code=400, detail=f"Invalid settings key(s): {', '.join(invalid_keys)}")
+
+        updates = {}
         if "cosine_similarity_threshold" in settings:
             try:
-                settings["cosine_similarity_threshold"] = float(settings["cosine_similarity_threshold"])
-            except ValueError:
-                pass
+                val = float(settings["cosine_similarity_threshold"])
+                if not (0.0 <= val <= 1.0):
+                    raise ValueError()
+                updates["cosine_similarity_threshold"] = val
+            except (ValueError, TypeError):
+                raise HTTPException(
+                    status_code=400,
+                    detail="cosine_similarity_threshold must be a float between 0.0 and 1.0"
+                )
+
         if "neighbor_audit_depth" in settings:
             try:
-                settings["neighbor_audit_depth"] = int(settings["neighbor_audit_depth"])
-            except ValueError:
-                pass
+                val = int(settings["neighbor_audit_depth"])
+                if val <= 0:
+                    raise ValueError()
+                updates["neighbor_audit_depth"] = val
+            except (ValueError, TypeError):
+                raise HTTPException(
+                    status_code=400,
+                    detail="neighbor_audit_depth must be a positive integer"
+                )
+
         if "automatic_quarantine" in settings:
             v = settings["automatic_quarantine"]
-            # Support both native bool and string representations (e.g. "false" must not be truthy)
             if isinstance(v, str):
-                settings["automatic_quarantine"] = v.lower() in ("true", "1", "yes")
+                vl = v.lower()
+                if vl in ("true", "1", "yes"):
+                    updates["automatic_quarantine"] = True
+                elif vl in ("false", "0", "no"):
+                    updates["automatic_quarantine"] = False
+                else:
+                    raise HTTPException(
+                        status_code=400,
+                        detail="automatic_quarantine must be a boolean or a valid boolean-like string"
+                    )
+            elif isinstance(v, bool):
+                updates["automatic_quarantine"] = v
+            elif isinstance(v, (int, float)):
+                updates["automatic_quarantine"] = bool(v)
             else:
-                settings["automatic_quarantine"] = bool(v)
+                raise HTTPException(
+                    status_code=400,
+                    detail="automatic_quarantine must be a boolean or a valid boolean-like value"
+                )
 
-        _settings.update(settings)
+        if "anomaly_risk_tolerance" in settings:
+            v = settings["anomaly_risk_tolerance"]
+            if v not in ("low", "medium", "high"):
+                raise HTTPException(
+                    status_code=400,
+                    detail="anomaly_risk_tolerance must be 'low', 'medium', or 'high'"
+                )
+            updates["anomaly_risk_tolerance"] = v
+
+        _settings.update(updates)
     return {"status": "success", "settings": _settings}
 
 
