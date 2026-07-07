@@ -325,6 +325,17 @@ async function updateSettingsUI() {
   }
 }
 
+async function resetSettings() {
+  try {
+    await fetch(`${API}/api/v1/demo/settings/reset`, {
+      method: 'POST'
+    });
+    await loadSettings();
+  } catch (e) {
+    console.warn('Could not reset settings:', e);
+  }
+}
+
 async function checkMode() {
   try {
     const res = await fetch(`${API}/api/v1/demo/status`);

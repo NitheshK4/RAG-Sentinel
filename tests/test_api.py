@@ -427,3 +427,34 @@ def test_demo_incidents_export_malformed(client):
     assert "Malformed Test Title" in csv_text
 
 
+def test_demo_settings_reset(client):
+    # 1. Update settings to custom values
+    update_res = client.post("/api/v1/demo/settings", json={
+        "cosine_similarity_threshold": 0.90,
+        "anomaly_risk_tolerance": "high",
+        "neighbor_audit_depth": 8,
+        "automatic_quarantine": True
+    })
+    assert update_res.status_code == 200
+    
+    # Verify they updated
+    settings_res = client.get("/api/v1/demo/settings")
+    assert settings_res.json()["cosine_similarity_threshold"] == 0.90
+    assert settings_res.json()["neighbor_audit_depth"] == 8
+
+    # 2. Reset settings to default values
+    reset_res = client.post("/api/v1/demo/settings/reset")
+    assert reset_res.status_code == 200
+    assert reset_res.json()["status"] == "success"
+    
+    # 3. Verify settings returned to defaults
+    final_res = client.get("/api/v1/demo/settings")
+    assert final_res.status_code == 200
+    final_settings = final_res.json()
+    assert final_settings["cosine_similarity_threshold"] == 0.75
+    assert final_settings["anomaly_risk_tolerance"] == "medium"
+    assert final_settings["neighbor_audit_depth"] == 3
+    assert final_settings["automatic_quarantine"] is False
+
+
+

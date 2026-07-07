@@ -129,13 +129,24 @@ async def export_incidents(format: str = "json"):
         )
 
 
-_settings = {
+DEFAULT_SETTINGS = {
     "cosine_similarity_threshold": 0.75,
     "anomaly_risk_tolerance": "medium",
     "neighbor_audit_depth": 3,
     "automatic_quarantine": False
 }
+_settings = dict(DEFAULT_SETTINGS)
 _settings_lock = threading.Lock()
+
+
+@router.post("/settings/reset")
+async def reset_settings():
+    """Reset the dynamic security detection parameters to their default values."""
+    with _settings_lock:
+        _settings.clear()
+        _settings.update(DEFAULT_SETTINGS)
+    return {"status": "success", "settings": _settings}
+
 
 
 @router.get("/settings")
