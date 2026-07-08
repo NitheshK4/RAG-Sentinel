@@ -492,6 +492,51 @@ def test_demo_threat_categories(client):
     assert data["categories"][0]["id"] == "instruction_injection"
 
 
+def test_demo_incidents_advanced(client):
+    # 1. Clear incidents first
+    client.delete("/api/v1/demo/incidents")
+    
+    # 2. Seed with three incidents
+    client.post("/api/v1/demo/incidents", json={
+        "stage": "source_triage",
+        "data": {"incident_id": "a", "severity": "low"},
+        "ts": "2026-07-01T12:00:00Z"
+    })
+    client.post("/api/v1/demo/incidents", json={
+        "stage": "chunk_audit",
+        "data": {"incident_id": "b", "severity": "high"},
+        "ts": "2026-07-02T12:00:00Z"
+    })
+    client.post("/api/v1/demo/incidents", json={
+        "stage": "neighbor_audit",
+        "data": {"incident_id": "c", "severity": "critical"},
+        "ts": "2026-07-03T12:00:00Z"
+    })
+
+    # 3. Test filtering by severity
+    res_high = client.get("/api/v1/demo/incidents?severity=high")
+    assert res_high.status_code == 200
+    assert len(res_high.json()) == 1
+    assert res_high.json()[0]["data"]["incident_id"] == "b"
+
+    # 4. Test pagination
+    res_pag = client.get("/api/v1/demo/incidents?limit=2&offset=1&sort_by=ts&order=asc")
+    assert res_pag.status_code == 200
+    items = res_pag.json()
+    assert len(items) == 2
+    assert items[0]["data"]["incident_id"] == "b"
+    assert items[1]["data"]["incident_id"] == "c"
+
+    # 5. Test sorting by severity
+    res_sev = client.get("/api/v1/demo/incidents?sort_by=severity&order=desc")
+    assert res_sev.status_code == 200
+    items_sev = res_sev.json()
+    assert items_sev[0]["data"]["incident_id"] == "c"
+    assert items_sev[1]["data"]["incident_id"] == "b"
+    assert items_sev[2]["data"]["incident_id"] == "a"
+
+
+
 
 
 

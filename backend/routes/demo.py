@@ -133,10 +133,45 @@ async def get_threat_categories():
 
 
 @router.get("/incidents")
-async def get_incidents():
-    """Get all incident records from backend memory."""
+async def get_incidents(
+    limit: int = 50,
+    offset: int = 0,
+    sort_by: str = "ts",
+    order: str = "desc",
+    severity: str = None
+):
+    """Get all incident records from backend memory with sorting, filtering, and pagination."""
     with _incidents_lock:
-        return _incidents
+        # 1. Filter
+        filtered_list = list(_incidents)
+        if severity:
+            sev_target = severity.lower()
+            temp = []
+            for item in filtered_list:
+                d = item.get("data") or {}
+                s = d.get("severity") or d.get("recommended_severity") or "low"
+                if str(s).lower() == sev_target:
+                    temp.append(item)
+            filtered_list = temp
+            
+        # 2. Sort
+        def get_sort_key(item):
+            if sort_by == "severity":
+                d = item.get("data") or {}
+                s = str(d.get("severity") or d.get("recommended_severity") or "low").lower()
+                sev_map = {"low": 1, "medium": 2, "high": 3, "critical": 4}
+                return sev_map.get(s, 0)
+            elif sort_by == "stage":
+                return item.get("stage", "")
+            else:
+                return item.get("ts", "")
+                
+        reverse_order = (order.lower() == "desc")
+        filtered_list.sort(key=get_sort_key, reverse=reverse_order)
+        
+        # 3. Paginate
+        paginated_list = filtered_list[offset : offset + limit]
+        return paginated_list
 
 
 @router.post("/incidents")
