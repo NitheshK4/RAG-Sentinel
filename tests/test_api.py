@@ -457,4 +457,31 @@ def test_demo_settings_reset(client):
     assert final_settings["automatic_quarantine"] is False
 
 
+def test_demo_telemetry(client):
+    # 1. Clear incidents first
+    client.delete("/api/v1/demo/incidents")
+    
+    # 2. Add an incident
+    client.post("/api/v1/demo/incidents", json={
+        "stage": "incident_report",
+        "data": {
+            "incident_id": "tel_123",
+            "title": "Tel Incident",
+            "severity": "high",
+            "attack_family": "authority_spoofing"
+        },
+        "ts": "2026-07-04T12:00:00Z"
+    })
+    
+    # 3. Call telemetry endpoint
+    res = client.get("/api/v1/demo/telemetry")
+    assert res.status_code == 200
+    data = res.json()
+    assert data["total_incidents"] == 1
+    assert data["by_severity"]["high"] == 1
+    assert data["by_stage"]["incident_report"] == 1
+    assert data["by_attack_family"]["authority_spoofing"] == 1
+
+
+
 

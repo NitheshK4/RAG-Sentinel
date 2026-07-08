@@ -63,6 +63,42 @@ async def all_demo_responses():
     return {"available_keys": list(DEMO_RESPONSES.keys())}
 
 
+@router.get("/telemetry")
+async def get_telemetry():
+    """Get aggregated statistics of current incidents in memory."""
+    with _incidents_lock:
+        total = len(_incidents)
+        by_severity = {"low": 0, "medium": 0, "high": 0, "critical": 0}
+        by_stage = {}
+        by_attack_family = {}
+        
+        for item in _incidents:
+            if not isinstance(item, dict):
+                continue
+            stage = item.get("stage", "unknown")
+            by_stage[stage] = by_stage.get(stage, 0) + 1
+            
+            d = item.get("data")
+            if isinstance(d, dict):
+                sev = d.get("severity") or d.get("recommended_severity") or "low"
+                sev_lower = str(sev).lower()
+                if sev_lower in by_severity:
+                    by_severity[sev_lower] += 1
+                else:
+                    by_severity[sev_lower] = by_severity.get(sev_lower, 0) + 1
+                    
+                family = d.get("attack_family") or d.get("primary_attack_family") or "none"
+                by_attack_family[family] = by_attack_family.get(family, 0) + 1
+                
+        return {
+            "total_incidents": total,
+            "by_severity": by_severity,
+            "by_stage": by_stage,
+            "by_attack_family": by_attack_family
+        }
+
+
+
 @router.get("/incidents")
 async def get_incidents():
     """Get all incident records from backend memory."""
