@@ -98,6 +98,39 @@ async def get_telemetry():
         }
 
 
+@router.get("/threat-categories")
+async def get_threat_categories():
+    """Return all supported attack/threat families and their descriptions."""
+    return {
+        "categories": [
+            {
+                "id": "instruction_injection",
+                "name": "Instruction Injection",
+                "description": "Adversarial prompts embedded in document inputs targeting downstream LLM instruction overrides."
+            },
+            {
+                "id": "authority_spoofing",
+                "name": "Authority Spoofing",
+                "description": "Forged provenance metadata or claiming administrative authority within content to compromise factuality."
+            },
+            {
+                "id": "near_duplicate_flooding",
+                "name": "Near-Duplicate Flooding",
+                "description": "Stuffed duplicate or near-duplicate payloads targeting domination of retrieval spaces."
+            },
+            {
+                "id": "semantic_drift",
+                "name": "Semantic Drift",
+                "description": "Gradual shifts in factuality or ontology mappings over multiple document revisions."
+            },
+            {
+                "id": "retrieval_bait",
+                "name": "Retrieval Bait",
+                "description": "Engineering highly relevant terms designed to hijack semantic search ranking."
+            }
+        ]
+    }
+
 
 @router.get("/incidents")
 async def get_incidents():

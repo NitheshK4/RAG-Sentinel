@@ -483,5 +483,15 @@ def test_demo_telemetry(client):
     assert data["by_attack_family"]["authority_spoofing"] == 1
 
 
+def test_demo_threat_categories(client):
+    res = client.get("/api/v1/demo/threat-categories")
+    assert res.status_code == 200
+    data = res.json()
+    assert "categories" in data
+    assert len(data["categories"]) == 5
+    assert data["categories"][0]["id"] == "instruction_injection"
+
+
+
 
 
