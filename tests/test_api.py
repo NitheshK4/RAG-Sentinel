@@ -536,6 +536,24 @@ def test_demo_incidents_advanced(client):
     assert items_sev[2]["data"]["incident_id"] == "a"
 
 
+def test_demo_incidents_export_html(client):
+    # Seed with one incident
+    client.post("/api/v1/demo/incidents", json={
+        "stage": "incident_report",
+        "data": {"incident_id": "temp_html_export", "severity": "high", "title": "HTML Export Test"},
+        "ts": "2026-07-04T12:00:00Z"
+    })
+    
+    res = client.get("/api/v1/demo/incidents/export?format=html")
+    assert res.status_code == 200
+    assert "text/html" in res.headers["content-type"]
+    assert "attachment" in res.headers["content-disposition"]
+    html_text = res.text
+    assert "RAG Sentinel Incidents Export" in html_text
+    assert "HTML Export Test" in html_text
+
+
+
 
 
 

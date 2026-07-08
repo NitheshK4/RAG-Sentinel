@@ -224,6 +224,63 @@ async def export_incidents(format: str = "json"):
             media_type="text/csv",
             headers={"Content-Disposition": "attachment; filename=rag_sentinel_incidents.csv"}
         )
+    elif format == "html":
+        # Create a basic but styled HTML table page
+        html_content = """<html>
+<head>
+    <title>RAG Sentinel Incidents Export</title>
+    <style>
+        body { font-family: sans-serif; background-color: #121214; color: #e1e1e6; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #29292e; padding: 10px; text-align: left; }
+        th { background-color: #202024; color: #00d4ff; }
+        tr:nth-child(even) { background-color: #17171a; }
+    </style>
+</head>
+<body>
+    <h1>RAG Sentinel Incident Report</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Stage</th>
+                <th>Title</th>
+                <th>Severity</th>
+                <th>Attack Family</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+"""
+        for item in data:
+            if not isinstance(item, dict):
+                continue
+            d = item.get("data")
+            if not isinstance(d, dict):
+                d = {}
+            ts = item.get("ts", "")
+            stage = item.get("stage", "")
+            title = d.get("title") or d.get("primary_hypothesis") or f"{stage} result"
+            severity = d.get("severity") or d.get("recommended_severity") or "low"
+            attack_family = d.get("attack_family") or d.get("primary_attack_family") or ""
+            summary = d.get("executive_summary") or d.get("primary_hypothesis") or d.get("overall_assessment") or ""
+            html_content += f"""            <tr>
+                <td>{ts}</td>
+                <td>{stage}</td>
+                <td>{title}</td>
+                <td>{severity}</td>
+                <td>{attack_family}</td>
+                <td>{summary}</td>
+            </tr>\n"""
+        html_content += """        </tbody>
+    </table>
+</body>
+</html>"""
+        return StreamingResponse(
+            io.BytesIO(html_content.encode("utf-8")),
+            media_type="text/html",
+            headers={"Content-Disposition": "attachment; filename=rag_sentinel_incidents.html"}
+        )
     else:
         # Default JSON
         return StreamingResponse(
