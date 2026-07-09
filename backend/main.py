@@ -13,6 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 
 from backend.core.config import APP_TITLE, APP_VERSION, API_PREFIX, DEMO_MODE
+from backend.core.rate_limiter import RateLimitMiddleware
 from backend.routes import ingestion, detection, evaluation, reporting, orchestrator, demo
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s — %(message)s")
@@ -45,6 +46,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Rate limiting — per-IP sliding window
+app.add_middleware(RateLimitMiddleware)
 
 # API Routes
 app.include_router(ingestion.router, prefix=API_PREFIX)
