@@ -88,6 +88,62 @@ async def health():
     }
 
 
+@app.get("/api/v1/health/ready")
+async def readiness():
+    """
+    Readiness probe — checks all critical dependencies.
+    Returns 200 if all components are healthy, 503 if any are degraded.
+    """
+    checks: dict[str, dict] = {}
+
+    # 1. LLM API connectivity
+    if DEMO_MODE:
+        checks["llm_api"] = {"status": "ok", "detail": "Demo mode — no LLM API required"}
+    else:
+        try:
+            import httpx
+            from backend.core.config import GEMINI_API_KEY, LLM_MODEL
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{LLM_MODEL}?key={GEMINI_API_KEY}"
+            async with httpx.AsyncClient(timeout=10.0) as client:
+                resp = await client.get(url)
+                if resp.status_code == 200:
+                    checks["llm_api"] = {"status": "ok", "detail": f"Model {LLM_MODEL} reachable"}
+                else:
+                    checks["llm_api"] = {"status": "degraded", "detail": f"HTTP {resp.status_code}"}
+        except Exception as e:
+            checks["llm_api"] = {"status": "degraded", "detail": str(e)}
+
+    # 2. Incident store
+    try:
+        from backend.routes.demo import _incidents, _incidents_lock
+        with _incidents_lock:
+            count = len(_incidents)
+        checks["incident_store"] = {"status": "ok", "detail": f"{count} incidents in memory"}
+    except Exception as e:
+        checks["incident_store"] = {"status": "degraded", "detail": str(e)}
+
+    # 3. Settings store
+    try:
+        from backend.routes.demo import _settings, _settings_lock
+        with _settings_lock:
+            _ = dict(_settings)
+        checks["settings_store"] = {"status": "ok", "detail": "Settings accessible"}
+    except Exception as e:
+        checks["settings_store"] = {"status": "degraded", "detail": str(e)}
+
+    all_ok = all(c["status"] == "ok" for c in checks.values())
+    status_code = 200 if all_ok else 503
+
+    from fastapi.responses import JSONResponse as _JSONResponse
+    return _JSONResponse(
+        status_code=status_code,
+        content={
+            "ready": all_ok,
+            "checks": checks,
+        },
+    )
+
+
 # Serve the frontend SPA
 frontend_dir = Path(__file__).parent.parent / "frontend"
 
