@@ -148,6 +148,35 @@ async def readiness():
     )
 
 
+@app.get("/api/v1/system/info")
+async def system_info():
+    """Return runtime and configuration metadata for operational visibility."""
+    import sys
+    import platform
+    import fastapi
+    import pydantic
+    from backend.core.config import LLM_MODEL
+
+    return {
+        "app": {
+            "title": APP_TITLE,
+            "version": APP_VERSION,
+            "demo_mode": DEMO_MODE,
+            "llm_model": LLM_MODEL,
+        },
+        "runtime": {
+            "python_version": sys.version,
+            "platform": platform.platform(),
+            "architecture": platform.machine(),
+        },
+        "dependencies": {
+            "fastapi": fastapi.__version__,
+            "pydantic": pydantic.__version__,
+        },
+        "routes_registered": len(app.routes),
+    }
+
+
 # Serve the frontend SPA
 frontend_dir = Path(__file__).parent.parent / "frontend"
 
