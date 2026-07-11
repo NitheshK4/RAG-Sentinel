@@ -1517,3 +1517,101 @@ async function runAttackSimulation() {
   spinner.classList.add('hidden');
 }
 
+
+// ── Keyboard Shortcuts ────────────────────────────────────────────────────
+// 1-5: switch views, ?: help overlay, Esc: close overlay/modals
+
+const VIEW_KEYS = {
+  '1': 'dashboard',
+  '2': 'pipeline',
+  '3': 'visualizer',
+  '4': 'incidents',
+  '5': 'architecture',
+};
+
+function createShortcutOverlay() {
+  const overlay = document.createElement('div');
+  overlay.id = 'shortcut-overlay';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-label', 'Keyboard shortcuts');
+  overlay.innerHTML = `
+    <div class="shortcut-modal">
+      <h2>⌨️ Keyboard Shortcuts</h2>
+      <div class="shortcut-grid">
+        <div class="shortcut-row"><kbd>1</kbd><span>Dashboard</span></div>
+        <div class="shortcut-row"><kbd>2</kbd><span>Pipelines</span></div>
+        <div class="shortcut-row"><kbd>3</kbd><span>Visualizer</span></div>
+        <div class="shortcut-row"><kbd>4</kbd><span>Incidents</span></div>
+        <div class="shortcut-row"><kbd>5</kbd><span>Architecture</span></div>
+        <div class="shortcut-row"><kbd>?</kbd><span>Show this help</span></div>
+        <div class="shortcut-row"><kbd>Esc</kbd><span>Close overlay</span></div>
+      </div>
+      <button class="shortcut-close" onclick="closeShortcutOverlay()">Close</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  return overlay;
+}
+
+function showShortcutOverlay() {
+  let overlay = document.getElementById('shortcut-overlay');
+  if (!overlay) overlay = createShortcutOverlay();
+  overlay.classList.add('visible');
+  overlay.querySelector('.shortcut-close').focus();
+}
+
+function closeShortcutOverlay() {
+  const overlay = document.getElementById('shortcut-overlay');
+  if (overlay) overlay.classList.remove('visible');
+}
+
+document.addEventListener('keydown', (e) => {
+  // Don't intercept when typing in inputs
+  const tag = e.target.tagName.toLowerCase();
+  if (tag === 'input' || tag === 'textarea' || tag === 'select' || e.target.isContentEditable) return;
+
+  // View switching: 1-5
+  if (VIEW_KEYS[e.key]) {
+    e.preventDefault();
+    switchView(VIEW_KEYS[e.key]);
+    return;
+  }
+
+  // Help overlay: ?
+  if (e.key === '?') {
+    e.preventDefault();
+    showShortcutOverlay();
+    return;
+  }
+
+  // Escape: close overlay
+  if (e.key === 'Escape') {
+    closeShortcutOverlay();
+    // Also close any node detail panels
+    const detail = document.getElementById('node-detail');
+    if (detail) detail.classList.add('hidden');
+    return;
+  }
+});
+
+// ── ARIA Live Region for Status Updates ───────────────────────────────────
+(function initAriaLiveRegion() {
+  if (!document.getElementById('aria-status')) {
+    const statusRegion = document.createElement('div');
+    statusRegion.id = 'aria-status';
+    statusRegion.setAttribute('role', 'status');
+    statusRegion.setAttribute('aria-live', 'polite');
+    statusRegion.setAttribute('aria-atomic', 'true');
+    statusRegion.className = 'sr-only';
+    document.body.appendChild(statusRegion);
+  }
+})();
+
+function announceStatus(message) {
+  const region = document.getElementById('aria-status');
+  if (region) {
+    region.textContent = message;
+    // Clear after screen reader has time to announce
+    setTimeout(() => { region.textContent = ''; }, 3000);
+  }
+}
