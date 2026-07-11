@@ -553,6 +553,45 @@ def test_demo_incidents_export_html(client):
     assert "HTML Export Test" in html_text
 
 
+def test_demo_delete_single_incident(client):
+    # 1. Clear existing incidents
+    client.delete("/api/v1/demo/incidents")
+
+    # 2. Add two incidents
+    client.post("/api/v1/demo/incidents", json={
+        "stage": "source_triage",
+        "data": {"incident_id": "delete_target_1", "severity": "low"},
+        "ts": "2026-07-01T12:00:00Z"
+    })
+    client.post("/api/v1/demo/incidents", json={
+        "stage": "chunk_audit",
+        "data": {"incident_id": "delete_target_2", "severity": "high"},
+        "ts": "2026-07-02T12:00:00Z"
+    })
+
+    # Note: in demo.py, add_incident does `_incidents.insert(0, incident)`.
+    # So index 0 has delete_target_2 (the newer one), and index 1 has delete_target_1.
+    res_list_before = client.get("/api/v1/demo/incidents")
+    assert len(res_list_before.json()) == 2
+    assert res_list_before.json()[0]["data"]["incident_id"] == "delete_target_2"
+
+    # 3. Delete target at index 0 (which is delete_target_2)
+    del_res = client.delete("/api/v1/demo/incidents/0")
+    assert del_res.status_code == 200
+    assert del_res.json() == {"status": "success"}
+
+    # 4. Check remaining list has only delete_target_1
+    res_list_after = client.get("/api/v1/demo/incidents")
+    assert len(res_list_after.json()) == 1
+    assert res_list_after.json()[0]["data"]["incident_id"] == "delete_target_1"
+
+    # 5. Try deleting invalid index, expect 404
+    del_res_invalid = client.delete("/api/v1/demo/incidents/99")
+    assert del_res_invalid.status_code == 404
+    assert "not found" in del_res_invalid.json()["detail"]
+
+
+
 
 
 
