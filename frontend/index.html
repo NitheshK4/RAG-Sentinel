@@ -58,7 +58,7 @@
         <a href="#" class="nav-link active" data-view="dashboard" id="nav-dashboard" role="tab" aria-selected="true" aria-controls="view-dashboard">Dashboard</a>
         <a href="#" class="nav-link" data-view="pipeline" id="nav-pipeline" role="tab" aria-selected="false" aria-controls="view-pipeline">Pipelines</a>
         <a href="#" class="nav-link" data-view="visualizer" id="nav-visualizer" role="tab" aria-selected="false" aria-controls="view-visualizer">Visualizer</a>
-        <a href="#" class="nav-link" data-view="incidents" id="nav-incidents" role="tab" aria-selected="false" aria-controls="view-incidents">Incidents</a>
+        <a href="#" class="nav-link" data-view="incidents" id="nav-incidents" role="tab" aria-selected="false" aria-controls="view-incidents" style="display:inline-flex; align-items:center; gap:6px;">Incidents<span id="nav-incidents-badge" class="nav-badge" style="display:none;"></span></a>
         <a href="#" class="nav-link" data-view="architecture" id="nav-architecture" role="tab" aria-selected="false" aria-controls="view-architecture">Architecture</a>
         <a href="/docs" class="nav-link" target="_blank" role="link">API Docs ↗</a>
         <button class="nav-link" onclick="showShortcutOverlay()" title="Keyboard shortcuts (?)" aria-label="Keyboard shortcuts" style="background:none;border:none;cursor:pointer;">⌨️</button>
@@ -482,6 +482,14 @@
               <option value="high" style="background:#1a1f2c; color:#ff944d;">High</option>
               <option value="medium" style="background:#1a1f2c; color:#ffc83b;">Medium</option>
               <option value="low" style="background:#1a1f2c; color:#a3b8cc;">Low</option>
+            </select>
+            <select id="incident-family-filter" style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.05); color: var(--text-primary); font-size: 13px; cursor: pointer; outline:none;" onchange="refreshIncidentFeed()">
+              <option value="all" style="background:#1a1f2c; color:#fff;">All Attack Families</option>
+              <option value="instruction_injection" style="background:#1a1f2c; color:#fff;">Instruction Injection</option>
+              <option value="authority_spoofing" style="background:#1a1f2c; color:#fff;">Authority Spoofing</option>
+              <option value="near_duplicate_flooding" style="background:#1a1f2c; color:#fff;">Near-Duplicate Flooding</option>
+              <option value="semantic_drift" style="background:#1a1f2c; color:#fff;">Semantic Drift</option>
+              <option value="retrieval_bait" style="background:#1a1f2c; color:#fff;">Retrieval Bait</option>
             </select>
           </div>
           <div style="display:flex; gap:10px;">

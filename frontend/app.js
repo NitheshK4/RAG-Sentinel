@@ -835,6 +835,8 @@ async function addToHistory(stage, data) {
   incidentHistory.unshift(entry);
   if (incidentHistory.length > 20) incidentHistory.pop();
 
+  updateNavBadge();
+
   // Persist to backend store
   try {
     await fetch(`${API}/api/v1/demo/incidents`, {
@@ -867,6 +869,7 @@ async function loadIncidentHistory() {
         body: JSON.stringify(entry),
       });
     }
+    updateNavBadge();
   } catch (e) {
     console.warn('Could not load incident history:', e);
   }
@@ -912,7 +915,24 @@ function exportIncidentsFormat(format) {
   window.open(`${API}/api/v1/demo/incidents/export?format=${format}`, '_blank');
 }
 
+function updateNavBadge() {
+  const badge = document.getElementById('nav-incidents-badge');
+  if (!badge) return;
+  const count = incidentHistory.filter(entry => {
+    const d = entry.data;
+    const sev = (d.severity || d.recommended_severity || 'low').toLowerCase();
+    return sev === 'high' || sev === 'critical';
+  }).length;
+  if (count > 0) {
+    badge.textContent = count;
+    badge.style.display = 'inline-flex';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
 function refreshIncidentFeed() {
+  updateNavBadge();
   const feed = document.getElementById('incident-feed');
   if (!incidentHistory.length) {
     feed.innerHTML = `<div style="text-align:center;padding:48px;color:var(--text-muted)">
@@ -924,8 +944,10 @@ function refreshIncidentFeed() {
   // Get filter inputs
   const searchInput = document.getElementById('incident-search');
   const severityFilter = document.getElementById('incident-severity-filter');
+  const familyFilter = document.getElementById('incident-family-filter');
   const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
   const filterSev = severityFilter ? severityFilter.value.toLowerCase() : 'all';
+  const filterFamily = familyFilter ? familyFilter.value.toLowerCase() : 'all';
 
   const filteredHistory = incidentHistory.filter(entry => {
     const d = entry.data;
@@ -936,6 +958,9 @@ function refreshIncidentFeed() {
 
     // Severity check
     if (filterSev !== 'all' && sev !== filterSev) return false;
+
+    // Family check
+    if (filterFamily !== 'all' && family !== filterFamily) return false;
 
     // Search check
     if (query) {
