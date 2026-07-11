@@ -10,6 +10,7 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111+-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![Gemini](https://img.shields.io/badge/Gemini_2.0_Flash-4285F4?style=flat-square&logo=google&logoColor=white)](https://ai.google.dev)
 [![Pydantic v2](https://img.shields.io/badge/Pydantic-v2-E92063?style=flat-square&logo=pydantic&logoColor=white)](https://docs.pydantic.dev)
+[![CI](https://github.com/NitheshK4/RAG-Sentinel/actions/workflows/ci.yml/badge.svg)](https://github.com/NitheshK4/RAG-Sentinel/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 
 </div>
@@ -153,6 +154,16 @@ http://localhost:8000
 
 Swagger interactive API docs are at `http://localhost:8000/docs`.
 
+### 🐳 Docker
+
+```bash
+# Build and run with Docker Compose
+docker compose up --build
+
+# Or with a Gemini API key
+GEMINI_API_KEY=your_key_here docker compose up --build
+```
+
 ---
 
 ## 📁 Project Structure
@@ -245,8 +256,12 @@ Score detector output against ground truth labels and return precision/recall me
 
 ```http
 GET  /api/v1/health                        → { status, version, demo_mode }
+GET  /api/v1/health/ready                  → Readiness probe with dependency checks
+GET  /api/v1/system/info                   → Runtime and config metadata
 GET  /api/v1/demo/incidents                → Persistent in-memory incident log
 POST /api/v1/demo/incidents                → Append incident to persistent store
+GET  /api/v1/demo/incidents/{index}        → Single incident detail by index
+POST /api/v1/demo/incidents/{index}/notes  → Add analyst note to an incident
 GET  /api/v1/demo/sample-source-bundle     → Pre-built demo input bundle
 GET  /api/v1/demo/sample-incident-report   → Pre-built demo incident report
 ```
@@ -269,6 +284,8 @@ GET  /api/v1/demo/sample-incident-report   → Pre-built demo incident report
 | Environment Variable | Default | Description |
 |---|---|---|
 | `GEMINI_API_KEY` | `""` | Google AI API key. If empty, the system runs in demo mode. |
+| `RATE_LIMIT_RPM` | `120` | Max requests per minute per IP. |
+| `RATE_LIMIT_BURST` | `20` | Burst allowance above RPM limit. |
 
 Demo mode returns realistic, analyst-grade mock responses for all 9 pipelines — fully usable for evaluation, demos, and local development without spending API quota.
 
@@ -289,6 +306,12 @@ Demo mode returns realistic, analyst-grade mock responses for all 9 pipelines �
 ## 📜 License
 
 MIT — see [LICENSE](LICENSE).
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, code style, and PR guidelines.
 
 ---
 
