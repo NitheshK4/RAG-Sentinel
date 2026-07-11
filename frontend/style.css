@@ -581,6 +581,7 @@ body::before {
 .incident-feed { display: flex; flex-direction: column; gap: 12px; }
 
 .incident-card {
+  position: relative;
   background: var(--bg-glass);
   border: 1px solid var(--border-glass);
   border-radius: 14px;
@@ -597,6 +598,27 @@ body::before {
 .incident-card.sev-high     { border-left: 3px solid var(--sev-high); }
 .incident-card.sev-medium   { border-left: 3px solid var(--sev-medium); }
 .incident-card.sev-low      { border-left: 3px solid var(--sev-low); }
+
+.delete-incident-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 2px 8px;
+  border-radius: 6px;
+  transition: all 0.2s;
+  line-height: 1;
+}
+.delete-incident-btn:hover {
+  color: #ff4d4d;
+  background: rgba(255, 77, 77, 0.15);
+  border-color: rgba(255, 77, 77, 0.3);
+}
+
 
 .incident-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
 .incident-meta {

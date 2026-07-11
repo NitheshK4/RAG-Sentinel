@@ -192,36 +192,6 @@ async def clear_incidents():
     return {"status": "success"}
 
 
-@router.get("/incidents/{index}")
-async def get_incident_detail(index: int):
-    """Get a single incident by its index in the store."""
-    with _incidents_lock:
-        if index < 0 or index >= len(_incidents):
-            raise HTTPException(status_code=404, detail=f"Incident index {index} not found")
-        return _incidents[index]
-
-
-@router.post("/incidents/{index}/notes")
-async def add_incident_note(index: int, body: dict[str, Any]):
-    """Append an analyst note/annotation to a specific incident."""
-    note_text = body.get("note", "").strip()
-    if not note_text:
-        raise HTTPException(status_code=400, detail="Note text is required ('note' field)")
-
-    with _incidents_lock:
-        if index < 0 or index >= len(_incidents):
-            raise HTTPException(status_code=404, detail=f"Incident index {index} not found")
-        incident = _incidents[index]
-        if "analyst_notes" not in incident:
-            incident["analyst_notes"] = []
-        import datetime
-        incident["analyst_notes"].append({
-            "note": note_text,
-            "added_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-        })
-    return {"status": "success", "notes_count": len(incident["analyst_notes"])}
-
-
 @router.get("/incidents/export")
 async def export_incidents(format: str = "json"):
     """Export current incidents as JSON or CSV file download."""
@@ -318,6 +288,47 @@ async def export_incidents(format: str = "json"):
             media_type="application/json",
             headers={"Content-Disposition": "attachment; filename=rag_sentinel_incidents.json"}
         )
+
+
+@router.get("/incidents/{index}")
+async def get_incident_detail(index: int):
+    """Get a single incident by its index in the store."""
+    with _incidents_lock:
+        if index < 0 or index >= len(_incidents):
+            raise HTTPException(status_code=404, detail=f"Incident index {index} not found")
+        return _incidents[index]
+
+
+@router.delete("/incidents/{index}")
+async def delete_incident(index: int):
+    """Delete a single incident from backend memory by its index."""
+    with _incidents_lock:
+        if index < 0 or index >= len(_incidents):
+            raise HTTPException(status_code=404, detail=f"Incident index {index} not found")
+        _incidents.pop(index)
+    return {"status": "success"}
+
+
+
+@router.post("/incidents/{index}/notes")
+async def add_incident_note(index: int, body: dict[str, Any]):
+    """Append an analyst note/annotation to a specific incident."""
+    note_text = body.get("note", "").strip()
+    if not note_text:
+        raise HTTPException(status_code=400, detail="Note text is required ('note' field)")
+
+    with _incidents_lock:
+        if index < 0 or index >= len(_incidents):
+            raise HTTPException(status_code=404, detail=f"Incident index {index} not found")
+        incident = _incidents[index]
+        if "analyst_notes" not in incident:
+            incident["analyst_notes"] = []
+        import datetime
+        incident["analyst_notes"].append({
+            "note": note_text,
+            "added_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        })
+    return {"status": "success", "notes_count": len(incident["analyst_notes"])}
 
 
 DEFAULT_SETTINGS = {

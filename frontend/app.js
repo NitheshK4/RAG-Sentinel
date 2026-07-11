@@ -879,11 +879,28 @@ async function clearIncidentHistoryUI() {
     if (res.ok) {
       incidentHistory = [];
       refreshIncidentFeed();
+      showToast('All incidents cleared', 'success');
     } else {
       console.error('Failed to clear incident history on backend');
     }
   } catch (e) {
     console.error('Error clearing incident history:', e);
+  }
+}
+
+async function deleteIncidentUI(idx) {
+  if (!confirm('Are you sure you want to delete this incident?')) return;
+  try {
+    const res = await fetch(`${API}/api/v1/demo/incidents/${idx}`, { method: 'DELETE' });
+    if (res.ok) {
+      incidentHistory.splice(idx, 1);
+      refreshIncidentFeed();
+      showToast('Incident deleted', 'success');
+    } else {
+      console.error('Failed to delete incident on backend');
+    }
+  } catch (e) {
+    console.error('Error deleting incident:', e);
   }
 }
 
@@ -948,6 +965,7 @@ function refreshIncidentFeed() {
     const demoTag = entry.demo ? '<span class="badge badge-label" style="font-size:10px">Demo</span>' : '';
 
     return `<div class="incident-card sev-${sev}" onclick="showIncidentDetail(${origIdx})">
+      <button class="delete-incident-btn" onclick="event.stopPropagation(); deleteIncidentUI(${origIdx})" title="Delete Incident">&times;</button>
       <div class="incident-title">${esc(title)}</div>
       <div class="incident-meta">
         <span>${esc(ts)}</span>
