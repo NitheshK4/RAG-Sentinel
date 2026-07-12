@@ -457,7 +457,24 @@ def test_demo_settings_reset(client):
     assert final_settings["automatic_quarantine"] is False
 
 
+def test_post_health_method_not_allowed(client):
+    # POST /api/v1/health should fail with 405 Method Not Allowed
+    res = client.post("/api/v1/health")
+    assert res.status_code == 405
+
+
+
+def test_demo_settings_reset_exact_default_match(client):
+    from backend.core.config import DEFAULT_SETTINGS
+    res = client.post("/api/v1/demo/settings/reset")
+    assert res.status_code == 200
+    data = res.json()
+    assert data["status"] == "success"
+    assert data["settings"] == DEFAULT_SETTINGS
+
+
 def test_demo_telemetry(client):
+
     # 1. Clear incidents first
     client.delete("/api/v1/demo/incidents")
     
