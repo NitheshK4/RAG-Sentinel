@@ -266,6 +266,14 @@ GET  /api/v1/demo/sample-source-bundle     → Pre-built demo input bundle
 GET  /api/v1/demo/sample-incident-report   → Pre-built demo incident report
 ```
 
+### Health & Operations
+
+Detailed diagnostics and operational monitoring endpoints:
+
+* **`GET /api/v1/health`**: Returns basic operational state (`"status": "ok"`), app version, and whether demo mode is active.
+* **`GET /api/v1/health/ready`**: A dependency-aware readiness probe that validates LLM API connectivity (if not in demo mode), memory stores for settings, and incident history. Returns HTTP `200 OK` on success, or HTTP `503 Service Unavailable` if any check fails.
+* **`GET /api/v1/system/info`**: Exposes system operational metadata including Python version, platform architecture, dependency library versions (FastAPI, Pydantic), and total registered API routes.
+
 ---
 
 ## 🛡️ Design Principles
