@@ -1,5 +1,4 @@
 import re
-from pathlib import Path
 from backend.core.config import PROMPTS_DIR
 
 # Embedded prompt templates as fallbacks in case the prompts folder is deleted
