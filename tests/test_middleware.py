@@ -120,6 +120,16 @@ class TestSystemInfo:
         assert isinstance(data["routes_registered"], int)
         assert data["routes_registered"] > 0
 
+    def test_system_info_dependency_versions(self, client):
+        """Verify FastAPI and Pydantic versions are valid non-empty strings."""
+        data = client.get("/api/v1/system/info").json()
+        dependencies = data.get("dependencies", {})
+        for name in ["fastapi", "pydantic"]:
+            assert name in dependencies
+            assert isinstance(dependencies[name], str)
+            assert len(dependencies[name].strip()) > 0
+
+
 
 # ── Incident Detail & Notes ───────────────────────────────────────
 
