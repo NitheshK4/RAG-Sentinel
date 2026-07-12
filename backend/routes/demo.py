@@ -6,6 +6,7 @@ without requiring an LLM API key.
 import json
 import csv
 import io
+import datetime
 import threading
 from typing import Any
 from fastapi import APIRouter, HTTPException
@@ -323,7 +324,6 @@ async def add_incident_note(index: int, body: dict[str, Any]):
         incident = _incidents[index]
         if "analyst_notes" not in incident:
             incident["analyst_notes"] = []
-        import datetime
         incident["analyst_notes"].append({
             "note": note_text,
             "added_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
