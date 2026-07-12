@@ -17,3 +17,11 @@ DEMO_MODE = not bool(GEMINI_API_KEY)
 APP_TITLE = "RAG Sentinel — Vector Index Poisoning Detector"
 APP_VERSION = "1.0.0"
 API_PREFIX = "/api/v1"
+
+DEFAULT_SETTINGS = {
+    "cosine_similarity_threshold": 0.75,
+    "anomaly_risk_tolerance": "medium",
+    "neighbor_audit_depth": 3,
+    "automatic_quarantine": False
+}
+

@@ -11,7 +11,7 @@ import threading
 from typing import Any
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
-from backend.core.config import EXAMPLES_DIR, DEMO_MODE
+from backend.core.config import EXAMPLES_DIR, DEMO_MODE, DEFAULT_SETTINGS
 from backend.core.llm_client import DEMO_RESPONSES
 
 router = APIRouter(prefix="/demo", tags=["Demo"])
@@ -331,12 +331,6 @@ async def add_incident_note(index: int, body: dict[str, Any]):
     return {"status": "success", "notes_count": len(incident["analyst_notes"])}
 
 
-DEFAULT_SETTINGS = {
-    "cosine_similarity_threshold": 0.75,
-    "anomaly_risk_tolerance": "medium",
-    "neighbor_audit_depth": 3,
-    "automatic_quarantine": False
-}
 _settings = dict(DEFAULT_SETTINGS)
 _settings_lock = threading.Lock()
 
