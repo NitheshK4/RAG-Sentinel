@@ -19,7 +19,9 @@ class RequestIdMiddleware(BaseHTTPMiddleware):
     """
 
     async def dispatch(self, request: Request, call_next):
-        request_id = request.headers.get("x-request-id") or str(uuid.uuid4())
+        raw_id = request.headers.get("x-request-id")
+        request_id = str(raw_id).strip() if raw_id and str(raw_id).strip() else str(uuid.uuid4())
+
 
         # Store on request state so downstream handlers can access it
         request.state.request_id = request_id
