@@ -97,6 +97,15 @@ class TestReadiness:
             assert "status" in check, f"Missing 'status' in {name}"
             assert "detail" in check, f"Missing 'detail' in {name}"
 
+    def test_readiness_demo_mode_statuses_ok(self, client):
+        """Verify that incident_store and settings_store report status as 'ok' in health probe."""
+        res = client.get("/api/v1/health/ready")
+        checks = res.json()["checks"]
+        assert checks["incident_store"]["status"] == "ok"
+        assert checks["settings_store"]["status"] == "ok"
+        assert "incidents in memory" in checks["incident_store"]["detail"]
+
+
 
 # ── System Info ────────────────────────────────────────────────────
 
