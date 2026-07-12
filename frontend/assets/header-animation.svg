@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="850" height="220" viewBox="0 0 850 220">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a0f;stop-opacity:1"/>
+      <stop offset="50%" style="stop-color:#0d1117;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#0a0e1a;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="cyan-glow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:0"/>
+      <stop offset="50%" style="stop-color:#00d4ff;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:0"/>
+    </linearGradient>
+    <linearGradient id="shield-fill" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:0.9"/>
+      <stop offset="100%" style="stop-color:#0066ff;stop-opacity:0.7"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glow-strong">
+      <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="particle-glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="850" height="220" fill="url(#bg)" rx="12"/>
+
+  <!-- Subtle grid pattern -->
+  <g opacity="0.05">
+    <line x1="0" y1="0" x2="0" y2="220" stroke="#00d4ff" stroke-width="0.5">
+      <animate attributeName="x1" values="0;850;0" dur="20s" repeatCount="indefinite"/>
+      <animate attributeName="x2" values="0;850;0" dur="20s" repeatCount="indefinite"/>
+    </line>
+    <line x1="0" y1="0" x2="850" y2="0" stroke="#00d4ff" stroke-width="0.5">
+      <animate attributeName="y1" values="0;220;0" dur="15s" repeatCount="indefinite"/>
+      <animate attributeName="y2" values="0;220;0" dur="15s" repeatCount="indefinite"/>
+    </line>
+  </g>
+
+  <!-- Horizontal scanning line -->
+  <rect x="0" y="0" width="850" height="2" fill="url(#cyan-glow)" opacity="0.15">
+    <animate attributeName="y" values="-2;222" dur="4s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- Floating particles -->
+  <circle cx="120" cy="40" r="1.5" fill="#00d4ff" opacity="0.6" filter="url(#particle-glow)">
+    <animate attributeName="cy" values="40;180;40" dur="7s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.6;0.1;0.6" dur="7s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="250" cy="170" r="1" fill="#ff6b35" opacity="0.5" filter="url(#particle-glow)">
+    <animate attributeName="cy" values="170;30;170" dur="9s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.5;0.1;0.5" dur="9s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="600" cy="50" r="1.5" fill="#00d4ff" opacity="0.4" filter="url(#particle-glow)">
+    <animate attributeName="cy" values="50;190;50" dur="6s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.4;0.1;0.4" dur="6s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="730" cy="150" r="1" fill="#ff3b3b" opacity="0.5" filter="url(#particle-glow)">
+    <animate attributeName="cy" values="150;20;150" dur="8s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.5;0.1;0.5" dur="8s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="400" cy="190" r="1.2" fill="#00ff88" opacity="0.3" filter="url(#particle-glow)">
+    <animate attributeName="cy" values="190;30;190" dur="10s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.3;0.08;0.3" dur="10s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="50" cy="110" r="1" fill="#00d4ff" opacity="0.4" filter="url(#particle-glow)">
+    <animate attributeName="cy" values="110;20;110" dur="5.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="800" cy="80" r="1.2" fill="#a855f7" opacity="0.35" filter="url(#particle-glow)">
+    <animate attributeName="cy" values="80;200;80" dur="7.5s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Shield icon (animated pulse) -->
+  <g transform="translate(362, 25)" filter="url(#glow-strong)">
+    <path d="M63 0 L126 30 L126 75 C126 120 63 145 63 145 C63 145 0 120 0 75 L0 30 Z"
+          fill="url(#shield-fill)" stroke="#00d4ff" stroke-width="1.5" opacity="0.9">
+      <animate attributeName="opacity" values="0.9;0.6;0.9" dur="3s" repeatCount="indefinite"/>
+    </path>
+    <!-- Inner shield check/radar -->
+    <circle cx="63" cy="70" r="25" fill="none" stroke="#00d4ff" stroke-width="1" opacity="0.4">
+      <animate attributeName="r" values="15;35;15" dur="2.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.5;0.05;0.5" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="63" cy="70" r="15" fill="none" stroke="#00d4ff" stroke-width="0.8" opacity="0.3">
+      <animate attributeName="r" values="10;30;10" dur="2.5s" repeatCount="indefinite" begin="0.8s"/>
+      <animate attributeName="opacity" values="0.4;0.02;0.4" dur="2.5s" repeatCount="indefinite" begin="0.8s"/>
+    </circle>
+    <!-- Lock icon in center -->
+    <rect x="53" y="62" width="20" height="16" rx="3" fill="#0a0e1a" stroke="#00d4ff" stroke-width="1.2"/>
+    <path d="M58 62 L58 55 C58 49 68 49 68 55 L68 62" fill="none" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round"/>
+    <circle cx="63" cy="71" r="2" fill="#00d4ff"/>
+  </g>
+
+  <!-- Title text -->
+  <text x="425" y="195" text-anchor="middle" font-family="'Segoe UI', system-ui, -apple-system, sans-serif" font-size="28" font-weight="700" fill="#e1e1e6" letter-spacing="1">
+    RAG Sentinel
+  </text>
+  <text x="425" y="215" text-anchor="middle" font-family="'Segoe UI', system-ui, -apple-system, sans-serif" font-size="11" fill="#00d4ff" letter-spacing="3" opacity="0.8">
+    VECTOR INDEX POISONING DETECTOR
+  </text>
+
+  <!-- Animated border glow -->
+  <rect x="1" y="1" width="848" height="218" rx="12" fill="none" stroke="#00d4ff" stroke-width="1" opacity="0.15">
+    <animate attributeName="opacity" values="0.15;0.35;0.15" dur="4s" repeatCount="indefinite"/>
+  </rect>
+</svg>

@@ -1,93 +1,219 @@
 <div align="center">
 
-<img src="https://img.shields.io/badge/RAG-Sentinel-00d4ff?style=for-the-badge&logo=shield&logoColor=white" alt="RAG Sentinel" height="40"/>
+<!-- Animated Header Banner -->
+<a href="https://github.com/NitheshK4/RAG-Sentinel">
+  <img src="frontend/assets/header-animation.svg" alt="RAG Sentinel — AI Security for RAG Pipelines" width="850"/>
+</a>
 
-# RAG Sentinel — Vector Index Poisoning Detector
+<br/>
 
-**A production-grade AI security analyst console for detecting, investigating, and remediating vector index poisoning attacks in Retrieval-Augmented Generation pipelines.**
+<!-- Typing Animation -->
+<a href="https://github.com/NitheshK4/RAG-Sentinel">
+  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=22&duration=3000&pause=1000&color=00D4FF&center=true&vCenter=true&multiline=true&repeat=true&width=700&height=70&lines=Detect+%E2%80%A2+Investigate+%E2%80%A2+Remediate;AI-Powered+Vector+Index+Poisoning+Detection" alt="Typing Animation"/>
+</a>
 
-[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.111+-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![Gemini](https://img.shields.io/badge/Gemini_2.0_Flash-4285F4?style=flat-square&logo=google&logoColor=white)](https://ai.google.dev)
-[![Pydantic v2](https://img.shields.io/badge/Pydantic-v2-E92063?style=flat-square&logo=pydantic&logoColor=white)](https://docs.pydantic.dev)
-[![CI](https://github.com/NitheshK4/RAG-Sentinel/actions/workflows/ci.yml/badge.svg)](https://github.com/NitheshK4/RAG-Sentinel/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
+<br/><br/>
+
+<!-- Badges Row -->
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.111+-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Gemini](https://img.shields.io/badge/Gemini_2.0-Flash-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev)
+[![Pydantic v2](https://img.shields.io/badge/Pydantic-v2-E92063?style=for-the-badge&logo=pydantic&logoColor=white)](https://docs.pydantic.dev)
+[![CI](https://img.shields.io/github/actions/workflow/status/NitheshK4/RAG-Sentinel/ci.yml?style=for-the-badge&logo=githubactions&logoColor=white&label=CI)](https://github.com/NitheshK4/RAG-Sentinel/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
+
+<br/>
+
+<!-- Quick Stats -->
+<img src="https://img.shields.io/badge/AI_Pipelines-9-00d4ff?style=flat-square&labelColor=0d1117" alt="9 AI Pipelines"/>
+<img src="https://img.shields.io/badge/Attack_Classes-5-ff3b3b?style=flat-square&labelColor=0d1117" alt="5 Attack Classes"/>
+<img src="https://img.shields.io/badge/Test_Coverage-56_Tests-00ff88?style=flat-square&labelColor=0d1117" alt="56 Tests"/>
+<img src="https://img.shields.io/badge/Zero_Config-Demo_Mode-a855f7?style=flat-square&labelColor=0d1117" alt="Zero Config"/>
 
 </div>
 
----
+<!-- Wave Divider -->
+<div align="center">
+  <img src="frontend/assets/wave-divider.svg" width="850" alt=""/>
+</div>
+
+<br/>
+
+> **RAG Sentinel** is a production-grade AI security analyst console that detects, investigates, and remediates vector index poisoning attacks in Retrieval-Augmented Generation pipelines — before they corrupt your AI's answers.
+
+<br/>
+
+## 🎯 The Threat: RAG Poisoning
+
+<table>
+<tr>
+<td width="60%">
+
+RAG systems retrieve documents from a vector index to ground LLM responses in real data. An attacker who can influence what gets indexed can **corrupt every downstream answer**.
+
+RAG Sentinel is the security layer that catches all of these — **before and after indexing.**
+
+</td>
+<td width="40%">
+
+```
+    ╭──────────────╮
+    │  📄 Poisoned  │
+    │   Document    │──┐
+    ╰──────────────╯  │
+                      ▼
+    ╭──────────────╮  ╭──────────╮
+    │ 🔍 RAG       │──│ ⚠️ Wrong │
+    │  Pipeline    │  │  Answer  │
+    ╰──────────────╯  ╰──────────╯
+           │
+    ╭──────▼───────╮
+    │ 🛡️ SENTINEL  │
+    │   BLOCKS IT  │
+    ╰──────────────╯
+```
+
+</td>
+</tr>
+</table>
+
+### Attack Classes Detected
+
+| | Attack Class | What It Does | Severity |
+|---|---|---|---|
+| 💉 | **Instruction Injection** | Embeds override commands inside policy documents to redirect LLM behavior | 🔴 Critical |
+| 🎭 | **Authority Spoofing** | Claims false institutional authority to push malicious directives | 🔴 Critical |
+| 🌊 | **Near-Duplicate Flooding** | Stuffs the index with near-identical poisoned chunks to dominate rankings | 🟠 High |
+| 🌫️ | **Semantic Drift** | Subtly mutates factual content across a corpus to erode accuracy | 🟡 Medium |
+| 🪤 | **Retrieval Bait** | Engineers chunks to rank highly for specific queries and hijack answers | 🟠 High |
+
+<!-- Wave Divider -->
+<div align="center">
+  <img src="frontend/assets/wave-divider.svg" width="850" alt=""/>
+</div>
+
+## 🖥️ Live Demo
 
 <div align="center">
-  <img src="frontend/demo-animation.webp" alt="RAG Sentinel Vector space visualizer and ingestion simulator walkthrough animation" width="850" style="border-radius:12px; border: 1px solid rgba(0, 212, 255, 0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.5);" />
+  <img src="frontend/demo-animation.webp" alt="RAG Sentinel — Security dashboard walkthrough showing vector space visualizer and ingestion simulator" width="850" style="border-radius:12px; border: 1px solid rgba(0, 212, 255, 0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.5);"/>
+  <br/><br/>
+  <em>🔊 Dark glassmorphism console • 2D vector space visualizer • Red team ingestion simulator</em>
 </div>
 
-## 🎯 What is RAG Poisoning?
+<!-- Wave Divider -->
+<div align="center">
+  <img src="frontend/assets/wave-divider.svg" width="850" alt=""/>
+</div>
 
-Retrieval-Augmented Generation (RAG) systems retrieve documents from a vector index to ground LLM responses in real data. This makes them powerful — and exploitable.
+## ⚡ 9 AI-Powered Detection Pipelines
 
-An attacker who can influence what gets indexed can corrupt every downstream answer:
+<div align="center">
+  <img src="frontend/assets/pipeline-animation.svg" alt="Animated pipeline visualization showing data flowing through 7 detection stages" width="850"/>
+</div>
 
-| Attack Class | What It Does |
-|---|---|
-| **Instruction Injection** | Embeds override commands inside policy documents to redirect LLM behavior |
-| **Authority Spoofing** | Claims false institutional authority to push malicious directives into responses |
-| **Near-Duplicate Flooding** | Stuffs the index with near-identical poisoned chunks to dominate retrieval rankings |
-| **Semantic Drift** | Subtly mutates factual content across a corpus to erode baseline accuracy |
-| **Retrieval Bait** | Engineers chunks to rank highly for specific queries and hijack answers |
+<br/>
 
-**RAG Sentinel is the security layer that detects all of these — before and after indexing.**
+Each pipeline is a **Gemini-backed LLM analysis stage** with enforced structured JSON output via Pydantic v2 schemas.
 
----
-
-## ✨ Features
-
-### 🔬 9 AI-Powered Detection Pipelines
-Each pipeline is a Gemini-backed LLM analysis stage with enforced structured JSON output via Pydantic v2 schemas.
+<details>
+<summary><b>📥 Ingestion Pipelines</b> — Catch threats at the gate</summary>
+<br/>
 
 | Pipeline | Endpoint | Purpose |
 |---|---|---|
-| Source Intake Triage | `POST /api/v1/ingestion/source-triage` | Assess trust signals, provenance, and poisoning risk of a new source before it enters the pipeline |
-| Chunk Semantic Audit | `POST /api/v1/ingestion/chunk-audit` | Inspect individual chunks for instruction injection, authority claims, and retrieval bait |
-| Neighbor Consistency Audit | `POST /api/v1/detection/neighbor-audit` | Detect spoofed insertions by checking semantic consistency with adjacent chunks |
-| Retrieval Trace Investigator | `POST /api/v1/detection/retrieval-trace` | Analyze live retrieval traces for ranking domination and answer corruption |
-| Attack Hypothesis Builder | `POST /api/v1/detection/attack-hypothesis` | Synthesize multi-stage evidence into a concise, analyst-verifiable poisoning theory |
-| Incident Reporter | `POST /api/v1/reporting/incident-report` | Generate analyst-grade incident reports with confirmed findings and business impact |
-| Remediation Planner | `POST /api/v1/reporting/remediation-plan` | Produce prioritized remediation steps balancing containment speed and false-positive risk |
-| Attack Generator | `POST /api/v1/evaluation/attack-generator` | Synthesize novel attack payloads for red teaming and benchmark creation |
-| Benchmark Judge | `POST /api/v1/evaluation/benchmark-judge` | Score detector output against ground truth to measure detection quality |
+| Source Intake Triage | `POST /api/v1/ingestion/source-triage` | Assess trust signals, provenance, and poisoning risk of a new source |
+| Chunk Semantic Audit | `POST /api/v1/ingestion/chunk-audit` | Inspect chunks for instruction injection, authority claims, and bait |
 
-### 🖥️ Premium Analyst Console (Single-Page App)
-A dark glassmorphism security dashboard served at `http://localhost:8000` with four views:
+</details>
 
-- **Dashboard** — Live telemetry: Security Health Gauge, Ingestion Traffic Timeline, attack family quick-run cards
-- **Pipelines** — Form-driven interface to run any of the 9 AI pipelines, with Load Demo Data support
-- **Incidents** — Persistent, real-time feed of investigation results (survives page reloads)
-- **Visualizer** — Interactive 2D Embedding Space canvas + Red Team Ingestion Simulator
+<details>
+<summary><b>🔍 Detection Pipelines</b> — Investigate suspicious patterns</summary>
+<br/>
 
-### 🧪 2D Vector Space Visualizer
-An interactive HTML Canvas visualization of vector embeddings in your index:
-- **Electric Cyan** = clean policy reference chunks
-- **Vibrant Orange** = external/borderline-trust crawler chunks  
-- **Glowing Red** = active poisoning payloads
-- Click any node to inspect its cosine similarity, centroid distance, source URI, and raw chunk text
+| Pipeline | Endpoint | Purpose |
+|---|---|---|
+| Neighbor Consistency | `POST /api/v1/detection/neighbor-audit` | Check semantic consistency with adjacent chunks |
+| Retrieval Trace | `POST /api/v1/detection/retrieval-trace` | Analyze retrieval traces for ranking domination |
+| Attack Hypothesis | `POST /api/v1/detection/attack-hypothesis` | Synthesize evidence into analyst-verifiable poisoning theory |
 
-### 🔴 Red Team Ingestion Simulator
-Step-by-step visual walkthrough of how a chunk traverses the 7-stage security gateway. Load one of three presets and press Simulate:
-- `🟢 Clean State` — all stages pass
-- `🟠 Authority Spoofing` — blocked at triage
-- `🔴 Instruction Injection` — bypasses triage, caught at chunk audit
+</details>
 
----
+<details>
+<summary><b>📋 Reporting Pipelines</b> — Generate analyst-grade reports</summary>
+<br/>
+
+| Pipeline | Endpoint | Purpose |
+|---|---|---|
+| Incident Reporter | `POST /api/v1/reporting/incident-report` | Generate incident reports with confirmed findings and business impact |
+| Remediation Planner | `POST /api/v1/reporting/remediation-plan` | Produce prioritized steps balancing speed and false-positive risk |
+
+</details>
+
+<details>
+<summary><b>🧪 Evaluation Pipelines</b> — Red team and benchmark</summary>
+<br/>
+
+| Pipeline | Endpoint | Purpose |
+|---|---|---|
+| Attack Generator | `POST /api/v1/evaluation/attack-generator` | Synthesize novel payloads for red teaming |
+| Benchmark Judge | `POST /api/v1/evaluation/benchmark-judge` | Score detector output against ground truth |
+
+</details>
+
+<!-- Wave Divider -->
+<div align="center">
+  <img src="frontend/assets/wave-divider.svg" width="850" alt=""/>
+</div>
+
+## ✨ Key Features
+
+<table>
+<tr>
+<td align="center" width="25%">
+<br/>
+<h3>🖥️ Analyst Console</h3>
+<p>Dark glassmorphism security dashboard with live telemetry, security health gauge, and ingestion timeline</p>
+</td>
+<td align="center" width="25%">
+<br/>
+<h3>🧪 Vector Visualizer</h3>
+<p>Interactive 2D embedding space canvas with color-coded nodes — click any node to inspect similarity scores</p>
+</td>
+<td align="center" width="25%">
+<br/>
+<h3>🔴 Red Team Sim</h3>
+<p>Step-by-step ingestion simulator with 3 presets: Clean, Authority Spoofing, and Instruction Injection</p>
+</td>
+<td align="center" width="25%">
+<br/>
+<h3>🤖 Smart Fallback</h3>
+<p>No API key? No problem. Full demo mode with realistic analyst-grade mock responses for all pipelines</p>
+</td>
+</tr>
+</table>
+
+### 🧪 2D Vector Space — Color Legend
+
+```
+  ● Electric Cyan    → Clean policy reference chunks
+  ● Vibrant Orange   → External / borderline-trust crawler chunks
+  ● Glowing Red      → Active poisoning payloads
+```
+
+<!-- Wave Divider -->
+<div align="center">
+  <img src="frontend/assets/wave-divider.svg" width="850" alt=""/>
+</div>
 
 ## 🏗️ Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         RAG Sentinel                                │
+│                          RAG  Sentinel                              │
 │                                                                     │
 │  ┌──────────────────────────────────────────────────────────────┐   │
-│  │ Frontend SPA (Vanilla JS + Canvas)                           │   │
-│  │  Dashboard · Pipelines · Incidents · Visualizer              │   │
+│  │ Frontend SPA  (Vanilla JS + Canvas)                          │   │
+│  │  Dashboard  ·  Pipelines  ·  Incidents  ·  Visualizer        │   │
 │  └───────────────────────┬──────────────────────────────────────┘   │
 │                          │ HTTP / REST                              │
 │  ┌───────────────────────▼──────────────────────────────────────┐   │
@@ -111,60 +237,66 @@ Step-by-step visual walkthrough of how a chunk traverses the 7-stage security ga
 │                          │                                          │
 │  ┌───────────────────────▼──────────────────────────────────────┐   │
 │  │ Gemini 2.0 Flash (via Google AI API)                         │   │
-│  │ Graceful fallback: realistic demo JSON when rate-limited     │   │
+│  │ Graceful fallback → realistic demo JSON when rate-limited    │   │
 │  └──────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
----
+<!-- Wave Divider -->
+<div align="center">
+  <img src="frontend/assets/wave-divider.svg" width="850" alt=""/>
+</div>
 
 ## 🚀 Quickstart
 
 ### Prerequisites
 - Python 3.11+
-- A [Google AI API key](https://aistudio.google.com/apikey) (optional — falls back to demo mode automatically)
+- A [Google AI API key](https://aistudio.google.com/apikey) *(optional — falls back to demo mode automatically)*
 
-### 1. Clone
+<table>
+<tr>
+<td>
+
+### ⚡ Quick Run (3 commands)
+
 ```bash
+# Clone
 git clone https://github.com/NitheshK4/RAG-Sentinel.git
 cd RAG-Sentinel
-```
 
-### 2. Install dependencies
-```bash
+# Install
 pip install -r requirements.txt
-```
 
-### 3. Run the server
-
-**With Gemini API (live inference):**
-```bash
-GEMINI_API_KEY=your_key_here python3 -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
-```
-
-**Without API key (demo mode — full UI, realistic mock responses):**
-```bash
+# Launch (demo mode — no API key needed!)
 python3 -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-### 4. Open the dashboard
-```
-http://localhost:8000
-```
+</td>
+<td>
 
-Swagger interactive API docs are at `http://localhost:8000/docs`.
-
-### 🐳 Docker
+### 🐳 Docker (1 command)
 
 ```bash
-# Build and run with Docker Compose
+# Demo mode
 docker compose up --build
 
-# Or with a Gemini API key
-GEMINI_API_KEY=your_key_here docker compose up --build
+# With Gemini API
+GEMINI_API_KEY=your_key docker compose up --build
 ```
 
----
+</td>
+</tr>
+</table>
+
+**Open the dashboard** → [`http://localhost:8000`](http://localhost:8000)
+**API docs** → [`http://localhost:8000/docs`](http://localhost:8000/docs)
+
+> 💡 **Live inference mode:** Set `GEMINI_API_KEY=your_key_here` before launch to enable real-time Gemini-powered analysis.
+
+<!-- Wave Divider -->
+<div align="center">
+  <img src="frontend/assets/wave-divider.svg" width="850" alt=""/>
+</div>
 
 ## 📁 Project Structure
 
@@ -177,7 +309,7 @@ RAG-Sentinel/
 │   │   └── prompt_loader.py    # In-memory embedded prompt templates
 │   ├── models/                 # Pydantic v2 I/O schemas for all 9 pipelines
 │   ├── routes/
-│   │   ├── ingestion.py        # Source triage + chunk audit endpoints
+│   │   ├── ingestion.py        # Source triage + chunk audit
 │   │   ├── detection.py        # Neighbor audit + retrieval trace + hypothesis
 │   │   ├── evaluation.py       # Attack generator + benchmark judge
 │   │   ├── reporting.py        # Incident reporter + remediation planner
@@ -187,31 +319,39 @@ RAG-Sentinel/
 ├── frontend/
 │   ├── index.html              # 5-view SPA with ARIA navigation
 │   ├── style.css               # Dark glassmorphism design system
-│   └── app.js                  # API calls, canvas visualizer, simulator engine
-├── schemas/                    # JSON Schema definitions for all 9 pipeline outputs
+│   ├── app.js                  # API calls, canvas visualizer, simulator engine
+│   └── assets/                 # Animated SVG assets for documentation
+├── schemas/                    # JSON Schema definitions for all 9 pipelines
 ├── examples/                   # Realistic sample data bundles for demo loading
 └── requirements.txt
 ```
 
----
+<!-- Wave Divider -->
+<div align="center">
+  <img src="frontend/assets/wave-divider.svg" width="850" alt=""/>
+</div>
 
 ## 🔌 API Reference
 
-All endpoints accept and return `application/json`. The full interactive reference is at `/docs`.
+All endpoints accept and return `application/json`. Interactive reference at `/docs`.
 
-### Ingestion
+<details>
+<summary><b>📥 Ingestion Endpoints</b></summary>
 
 ```http
 POST /api/v1/ingestion/source-triage
 ```
-Assess a source before it enters the pipeline. Returns a risk classification, trust tier, and actionable flags.
+Assess a source before it enters the pipeline. Returns risk classification, trust tier, and actionable flags.
 
 ```http
 POST /api/v1/ingestion/chunk-audit
 ```
-Inspect a single chunk for semantic poisoning signals. Returns threat category, confidence score, and evidence summary.
+Inspect a single chunk for semantic poisoning signals. Returns threat category, confidence score, and evidence.
 
-### Detection
+</details>
+
+<details>
+<summary><b>🔍 Detection Endpoints</b></summary>
 
 ```http
 POST /api/v1/detection/neighbor-audit
@@ -228,7 +368,10 @@ POST /api/v1/detection/attack-hypothesis
 ```
 Synthesize all prior stage outputs into a single structured poisoning hypothesis.
 
-### Reporting
+</details>
+
+<details>
+<summary><b>📋 Reporting Endpoints</b></summary>
 
 ```http
 POST /api/v1/reporting/incident-report
@@ -238,21 +381,27 @@ Generate a formal analyst incident report with confirmed scope and immediate act
 ```http
 POST /api/v1/reporting/remediation-plan
 ```
-Produce a prioritized remediation plan weighted against operational constraints and reindex capability.
+Produce a prioritized remediation plan weighted against operational constraints.
 
-### Evaluation
+</details>
+
+<details>
+<summary><b>🧪 Evaluation Endpoints</b></summary>
 
 ```http
 POST /api/v1/evaluation/attack-generator
 ```
-Generate synthetic attack payloads for red team exercises and benchmark dataset creation.
+Generate synthetic attack payloads for red team exercises and benchmark creation.
 
 ```http
 POST /api/v1/evaluation/benchmark-judge
 ```
 Score detector output against ground truth labels and return precision/recall metrics.
 
-### Health & Demo
+</details>
+
+<details>
+<summary><b>💚 Health & Demo Endpoints</b></summary>
 
 ```http
 GET  /api/v1/health                        → { status, version, demo_mode }
@@ -266,85 +415,132 @@ GET  /api/v1/demo/sample-source-bundle     → Pre-built demo input bundle
 GET  /api/v1/demo/sample-incident-report   → Pre-built demo incident report
 ```
 
-### Health & Operations
+</details>
 
-Detailed diagnostics and operational monitoring endpoints:
-
-* **`GET /api/v1/health`**: Returns basic operational state (`"status": "ok"`), app version, and whether demo mode is active.
-* **`GET /api/v1/health/ready`**: A dependency-aware readiness probe that validates LLM API connectivity (if not in demo mode), memory stores for settings, and incident history. Returns HTTP `200 OK` on success, or HTTP `503 Service Unavailable` if any check fails.
-* **`GET /api/v1/system/info`**: Exposes system operational metadata including Python version, platform architecture, dependency library versions (FastAPI, Pydantic), and total registered API routes.
-
----
-
-## 🛡️ Design Principles
-
-- **Every pipeline has a single responsibility.** No prompt does more than one job.
-- **Every output is machine-parseable.** Pydantic v2 enforces the contract at the API boundary.
-- **No silent failures.** The LLM client catches rate limit errors (HTTP 429) and falls back to high-fidelity demo JSON. No blank screens, no 500s in production.
-- **Prompts are not stored on disk.** All 10 prompt templates are embedded in memory in `prompt_loader.py`. The system is fully self-contained — clone and run.
-- **Concurrency is safe.** The in-memory incident store is protected by `threading.Lock()`.
-- **Human review is required.** The system flags `high` and `critical` severity findings but never takes destructive remediation action automatically.
-
----
-
-## ⚙️ Configuration
-
-| Environment Variable | Default | Description |
-|---|---|---|
-| `GEMINI_API_KEY` | `""` | Google AI API key. If empty, the system runs in demo mode. |
-| `RATE_LIMIT_RPM` | `120` | Max requests per minute per IP. |
-| `RATE_LIMIT_BURST` | `20` | Burst allowance above RPM limit. |
-
-Demo mode returns realistic, analyst-grade mock responses for all 9 pipelines — fully usable for evaluation, demos, and local development without spending API quota.
-
----
+<!-- Wave Divider -->
+<div align="center">
+  <img src="frontend/assets/wave-divider.svg" width="850" alt=""/>
+</div>
 
 ## 🧰 Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Backend | Python 3.11, FastAPI 0.111, Uvicorn |
-| Validation | Pydantic v2 |
-| LLM | Google Gemini 2.0 Flash via `httpx` |
-| Frontend | Vanilla JS, HTML5 Canvas, CSS Glassmorphism |
-| Prompt engine | In-memory embedded templates with `{{variable}}` interpolation |
+<div align="center">
+  <img src="frontend/assets/tech-stack.svg" alt="Tech stack — Python, FastAPI, Gemini 2.0, Pydantic v2, HTML5 Canvas, Docker" width="850"/>
+</div>
 
----
+<!-- Wave Divider -->
+<div align="center">
+  <img src="frontend/assets/wave-divider.svg" width="850" alt=""/>
+</div>
+
+## 🛡️ Design Principles
+
+<table>
+<tr>
+<td>🎯</td>
+<td><b>Single Responsibility</b></td>
+<td>Every pipeline has one job. No prompt does more than one task.</td>
+</tr>
+<tr>
+<td>🔒</td>
+<td><b>Machine-Parseable Output</b></td>
+<td>Pydantic v2 enforces the contract at every API boundary.</td>
+</tr>
+<tr>
+<td>🔄</td>
+<td><b>No Silent Failures</b></td>
+<td>LLM client catches 429s and falls back to high-fidelity demo JSON. No blank screens.</td>
+</tr>
+<tr>
+<td>📦</td>
+<td><b>Self-Contained</b></td>
+<td>All prompt templates embedded in memory. Clone and run — no external deps.</td>
+</tr>
+<tr>
+<td>🧵</td>
+<td><b>Concurrency Safe</b></td>
+<td>In-memory stores are protected by <code>threading.Lock()</code>.</td>
+</tr>
+<tr>
+<td>👤</td>
+<td><b>Human-in-the-Loop</b></td>
+<td>System flags findings but never takes destructive action automatically.</td>
+</tr>
+</table>
+
+<!-- Wave Divider -->
+<div align="center">
+  <img src="frontend/assets/wave-divider.svg" width="850" alt=""/>
+</div>
+
+## ⚙️ Configuration
+
+| Variable | Default | Description |
+|---|---|---|
+| `GEMINI_API_KEY` | `""` | Google AI API key. If empty, system runs in demo mode. |
+| `RATE_LIMIT_RPM` | `120` | Max requests per minute per IP. |
+| `RATE_LIMIT_BURST` | `20` | Burst allowance above RPM limit. |
+
+> 💡 Demo mode returns realistic, analyst-grade mock responses for all 9 pipelines — fully usable for evaluation, demos, and local development without API quota.
+
+<!-- Wave Divider -->
+<div align="center">
+  <img src="frontend/assets/wave-divider.svg" width="850" alt=""/>
+</div>
+
+## 🔧 Troubleshooting
+
+<details>
+<summary><b>Rate Limiting Errors (HTTP 429)</b></summary>
+
+Encountering `HTTP 429 Rate Limit Exceeded`? Raise the limits for local development:
+```bash
+RATE_LIMIT_RPM=500 RATE_LIMIT_BURST=100 python3 -m uvicorn backend.main:app --reload
+```
+
+</details>
+
+<details>
+<summary><b>Static Asset Caching Issues</b></summary>
+
+If frontend changes don't appear:
+- Disable browser caching in developer tools
+- Perform a hard reload (`Cmd+Shift+R` / `Ctrl+F5`)
+
+</details>
+
+<details>
+<summary><b>LLM Connectivity Failures</b></summary>
+
+If `/api/v1/health/ready` shows `llm_api` as `degraded`:
+- Verify `GEMINI_API_KEY` is correctly set and exported
+- Check outbound access to `generativelanguage.googleapis.com`
+
+</details>
+
+<!-- Wave Divider -->
+<div align="center">
+  <img src="frontend/assets/wave-divider.svg" width="850" alt=""/>
+</div>
 
 ## 📜 License
 
 MIT — see [LICENSE](LICENSE).
 
----
-
-## 🔧 Troubleshooting
-
-### Rate Limiting Errors (HTTP 429)
-If you encounter `HTTP 429 Rate Limit Exceeded` during intense API operations, it is likely due to the sliding-window IP rate limiter. You can raise or adjust this limit in local development by configuring environment variables:
-```bash
-RATE_LIMIT_RPM=500 RATE_LIMIT_BURST=100 python3 -m uvicorn backend.main:app --reload
-```
-
-### Static Asset Serving & Caching
-The backend app serves static SPA assets. If changes to the frontend do not load immediately in your browser:
-* Verify that your browser caching is disabled in developer tools.
-* The API serving routes return `Cache-Control: no-cache` for HTML requests, but browser memory cache might still interfere. Perform a hard reload (`Cmd+Shift+R` or `Ctrl+F5`).
-
-### LLM Connectivity Failures
-When running in Live Mode, if `/api/v1/health/ready` reports the `llm_api` check as `degraded`:
-* Verify your `GEMINI_API_KEY` environment variable is correctly set and exported.
-* Ensure your machine has outbound access to `generativelanguage.googleapis.com`.
-
----
-
 ## 🤝 Contributing
 
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, code style, and PR guidelines.
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ---
 
 <div align="center">
 
-Built to make RAG systems harder to poison. 🛡️
+<br/>
+
+<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&size=14&duration=4000&pause=2000&color=00D4FF&center=true&vCenter=true&repeat=true&width=400&height=30&lines=Built+to+make+RAG+systems+harder+to+poison.+%F0%9F%9B%A1%EF%B8%8F" alt="Built to make RAG systems harder to poison"/>
+
+<br/>
+
+<a href="#"><img src="https://img.shields.io/badge/⬆_Back_to_Top-0d1117?style=for-the-badge" alt="Back to Top"/></a>
 
 </div>

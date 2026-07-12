@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="850" height="30" viewBox="0 0 850 30">
+  <defs>
+    <linearGradient id="wave-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:0"/>
+      <stop offset="20%" style="stop-color:#00d4ff;stop-opacity:0.4"/>
+      <stop offset="50%" style="stop-color:#0066ff;stop-opacity:0.6"/>
+      <stop offset="80%" style="stop-color:#a855f7;stop-opacity:0.4"/>
+      <stop offset="100%" style="stop-color:#a855f7;stop-opacity:0"/>
+    </linearGradient>
+  </defs>
+  <path d="M0,15 Q50,5 100,15 T200,15 T300,15 T400,15 T500,15 T600,15 T700,15 T800,15 L850,15"
+        fill="none" stroke="url(#wave-grad)" stroke-width="1.5" opacity="0.8">
+    <animate attributeName="d"
+      values="M0,15 Q50,5 100,15 T200,15 T300,15 T400,15 T500,15 T600,15 T700,15 T800,15 L850,15;
+              M0,15 Q50,25 100,15 T200,15 T300,15 T400,15 T500,15 T600,15 T700,15 T800,15 L850,15;
+              M0,15 Q50,5 100,15 T200,15 T300,15 T400,15 T500,15 T600,15 T700,15 T800,15 L850,15"
+      dur="3s" repeatCount="indefinite"/>
+  </path>
+  <path d="M0,15 Q75,25 150,15 T300,15 T450,15 T600,15 T750,15 L850,15"
+        fill="none" stroke="url(#wave-grad)" stroke-width="1" opacity="0.4">
+    <animate attributeName="d"
+      values="M0,15 Q75,25 150,15 T300,15 T450,15 T600,15 T750,15 L850,15;
+              M0,15 Q75,5 150,15 T300,15 T450,15 T600,15 T750,15 L850,15;
+              M0,15 Q75,25 150,15 T300,15 T450,15 T600,15 T750,15 L850,15"
+      dur="4s" repeatCount="indefinite"/>
+  </path>
+  <!-- Dot traveling along the line -->
+  <circle r="2.5" fill="#00d4ff" opacity="0.9">
+    <animateMotion dur="6s" repeatCount="indefinite"
+      path="M0,15 Q50,5 100,15 T200,15 T300,15 T400,15 T500,15 T600,15 T700,15 T800,15 L850,15"/>
+    <animate attributeName="opacity" values="0.9;0.3;0.9" dur="6s" repeatCount="indefinite"/>
+  </circle>
+</svg>

@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="850" height="110" viewBox="0 0 850 110">
+  <defs>
+    <linearGradient id="bg-ts" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a0f"/>
+      <stop offset="100%" style="stop-color:#0d1117"/>
+    </linearGradient>
+    <filter id="tsg">
+      <feGaussianBlur stdDeviation="2.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="850" height="110" fill="url(#bg-ts)" rx="10"/>
+  <rect x="1" y="1" width="848" height="108" rx="10" fill="none" stroke="#00d4ff" stroke-width="0.5" opacity="0.1"/>
+
+  <!-- Python -->
+  <g transform="translate(65,20)">
+    <rect x="-45" y="-5" width="90" height="85" rx="10" fill="#0d1117" stroke="#3776AB" stroke-width="1" opacity="0.6">
+      <animate attributeName="stroke-opacity" values="0.3;0.8;0.3" dur="4s" repeatCount="indefinite"/>
+    </rect>
+    <text x="0" y="30" text-anchor="middle" font-size="26">🐍</text>
+    <text x="0" y="52" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="10" fill="#e1e1e6" font-weight="600">Python</text>
+    <text x="0" y="65" text-anchor="middle" font-family="monospace" font-size="8" fill="#3776AB">3.11+</text>
+  </g>
+
+  <!-- FastAPI -->
+  <g transform="translate(195,20)">
+    <rect x="-45" y="-5" width="90" height="85" rx="10" fill="#0d1117" stroke="#009688" stroke-width="1" opacity="0.6">
+      <animate attributeName="stroke-opacity" values="0.3;0.8;0.3" dur="4s" repeatCount="indefinite" begin="0.5s"/>
+    </rect>
+    <text x="0" y="30" text-anchor="middle" font-size="26">⚡</text>
+    <text x="0" y="52" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="10" fill="#e1e1e6" font-weight="600">FastAPI</text>
+    <text x="0" y="65" text-anchor="middle" font-family="monospace" font-size="8" fill="#009688">0.111+</text>
+  </g>
+
+  <!-- Gemini -->
+  <g transform="translate(325,20)">
+    <rect x="-45" y="-5" width="90" height="85" rx="10" fill="#0d1117" stroke="#4285F4" stroke-width="1" opacity="0.6">
+      <animate attributeName="stroke-opacity" values="0.3;0.8;0.3" dur="4s" repeatCount="indefinite" begin="1s"/>
+    </rect>
+    <text x="0" y="30" text-anchor="middle" font-size="26">✨</text>
+    <text x="0" y="52" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="10" fill="#e1e1e6" font-weight="600">Gemini 2.0</text>
+    <text x="0" y="65" text-anchor="middle" font-family="monospace" font-size="8" fill="#4285F4">Flash</text>
+  </g>
+
+  <!-- Pydantic -->
+  <g transform="translate(455,20)">
+    <rect x="-45" y="-5" width="90" height="85" rx="10" fill="#0d1117" stroke="#E92063" stroke-width="1" opacity="0.6">
+      <animate attributeName="stroke-opacity" values="0.3;0.8;0.3" dur="4s" repeatCount="indefinite" begin="1.5s"/>
+    </rect>
+    <text x="0" y="30" text-anchor="middle" font-size="26">🔒</text>
+    <text x="0" y="52" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="10" fill="#e1e1e6" font-weight="600">Pydantic</text>
+    <text x="0" y="65" text-anchor="middle" font-family="monospace" font-size="8" fill="#E92063">v2</text>
+  </g>
+
+  <!-- Canvas -->
+  <g transform="translate(585,20)">
+    <rect x="-45" y="-5" width="90" height="85" rx="10" fill="#0d1117" stroke="#f0db4f" stroke-width="1" opacity="0.6">
+      <animate attributeName="stroke-opacity" values="0.3;0.8;0.3" dur="4s" repeatCount="indefinite" begin="2s"/>
+    </rect>
+    <text x="0" y="30" text-anchor="middle" font-size="26">🎨</text>
+    <text x="0" y="52" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="10" fill="#e1e1e6" font-weight="600">Canvas</text>
+    <text x="0" y="65" text-anchor="middle" font-family="monospace" font-size="8" fill="#f0db4f">HTML5</text>
+  </g>
+
+  <!-- Docker -->
+  <g transform="translate(715,20)">
+    <rect x="-45" y="-5" width="90" height="85" rx="10" fill="#0d1117" stroke="#2496ED" stroke-width="1" opacity="0.6">
+      <animate attributeName="stroke-opacity" values="0.3;0.8;0.3" dur="4s" repeatCount="indefinite" begin="2.5s"/>
+    </rect>
+    <text x="0" y="30" text-anchor="middle" font-size="26">🐳</text>
+    <text x="0" y="52" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="10" fill="#e1e1e6" font-weight="600">Docker</text>
+    <text x="0" y="65" text-anchor="middle" font-family="monospace" font-size="8" fill="#2496ED">Compose</text>
+  </g>
+</svg>
