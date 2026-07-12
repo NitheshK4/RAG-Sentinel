@@ -317,6 +317,26 @@ MIT — see [LICENSE](LICENSE).
 
 ---
 
+## 🔧 Troubleshooting
+
+### Rate Limiting Errors (HTTP 429)
+If you encounter `HTTP 429 Rate Limit Exceeded` during intense API operations, it is likely due to the sliding-window IP rate limiter. You can raise or adjust this limit in local development by configuring environment variables:
+```bash
+RATE_LIMIT_RPM=500 RATE_LIMIT_BURST=100 python3 -m uvicorn backend.main:app --reload
+```
+
+### Static Asset Serving & Caching
+The backend app serves static SPA assets. If changes to the frontend do not load immediately in your browser:
+* Verify that your browser caching is disabled in developer tools.
+* The API serving routes return `Cache-Control: no-cache` for HTML requests, but browser memory cache might still interfere. Perform a hard reload (`Cmd+Shift+R` or `Ctrl+F5`).
+
+### LLM Connectivity Failures
+When running in Live Mode, if `/api/v1/health/ready` reports the `llm_api` check as `degraded`:
+* Verify your `GEMINI_API_KEY` environment variable is correctly set and exported.
+* Ensure your machine has outbound access to `generativelanguage.googleapis.com`.
+
+---
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, code style, and PR guidelines.
