@@ -59,6 +59,17 @@ class TestRateLimiter:
             res = client.get("/api/v1/health")
             assert res.status_code == 200
 
+    def test_rate_limit_values_decrease(self, client):
+        """Verify that the remaining rate limit decreases sequentially across requests."""
+        res1 = client.get("/api/v1/demo/status")
+        rem1 = int(res1.headers["x-ratelimit-remaining"])
+        
+        res2 = client.get("/api/v1/demo/status")
+        rem2 = int(res2.headers["x-ratelimit-remaining"])
+        
+        assert rem2 == rem1 - 1
+
+
 
 # ── Readiness Endpoint ─────────────────────────────────────────────
 
