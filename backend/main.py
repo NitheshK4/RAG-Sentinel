@@ -187,11 +187,21 @@ if frontend_dir.exists():
 
     @app.get("/", include_in_schema=False)
     async def serve_index():
-        return FileResponse(str(frontend_dir / "index.html"))
+        return FileResponse(
+            str(frontend_dir / "index.html"),
+            headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
+        )
 
     @app.get("/{full_path:path}", include_in_schema=False)
     async def serve_spa(full_path: str):
         file_path = frontend_dir / full_path
         if file_path.exists() and file_path.is_file():
-            return FileResponse(str(file_path))
-        return FileResponse(str(frontend_dir / "index.html"))
+            return FileResponse(
+                str(file_path),
+                headers={"Cache-Control": "public, max-age=3600"}
+            )
+        return FileResponse(
+            str(frontend_dir / "index.html"),
+            headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
+        )
+
