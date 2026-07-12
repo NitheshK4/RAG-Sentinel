@@ -6,6 +6,8 @@ FastAPI application entrypoint.
 import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
+from typing import Any
+
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -84,7 +86,7 @@ async def general_exception_handler(request, exc):
 
 
 @app.get("/api/v1/health")
-async def health():
+async def health() -> dict[str, Any]:
     return {
         "status": "ok",
         "version": APP_VERSION,
@@ -149,7 +151,7 @@ async def readiness():
 
 
 @app.get("/api/v1/system/info")
-async def system_info():
+async def system_info() -> dict[str, Any]:
     """Return runtime and configuration metadata for operational visibility."""
     import sys
     import platform
