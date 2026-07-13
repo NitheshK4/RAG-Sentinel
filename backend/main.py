@@ -116,6 +116,16 @@ async def health() -> dict[str, Any]:
     }
 
 
+@app.get("/api/v1/health/live")
+async def liveness():
+    """
+    Liveness probe — confirms the process is responsive.
+    Returns 200 unconditionally with no dependency checks.
+    Kubernetes restarts the pod only when this fails.
+    """
+    return {"alive": True}
+
+
 @app.get("/api/v1/health/ready")
 async def readiness():
     """
