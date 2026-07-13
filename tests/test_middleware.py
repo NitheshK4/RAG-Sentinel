@@ -198,3 +198,68 @@ class TestIncidentDetail:
         incident = client.get("/api/v1/demo/incidents/0").json()
         assert "analyst_notes" in incident
         assert "added_at" in incident["analyst_notes"][0]
+
+
+# ── Security Headers ──────────────────────────────────────────────
+
+class TestSecurityHeaders:
+    def test_x_content_type_options(self, client):
+        """Responses should include X-Content-Type-Options: nosniff."""
+        res = client.get("/api/v1/health")
+        assert res.headers.get("x-content-type-options") == "nosniff"
+
+    def test_x_frame_options(self, client):
+        """Responses should include X-Frame-Options: DENY."""
+        res = client.get("/api/v1/health")
+        assert res.headers.get("x-frame-options") == "DENY"
+
+    def test_referrer_policy(self, client):
+        """Responses should include Referrer-Policy header."""
+        res = client.get("/api/v1/health")
+        assert res.headers.get("referrer-policy") == "strict-origin-when-cross-origin"
+
+    def test_permissions_policy(self, client):
+        """Responses should include Permissions-Policy header."""
+        res = client.get("/api/v1/health")
+        assert "permissions-policy" in res.headers
+
+    def test_security_headers_on_api_routes(self, client):
+        """Security headers should be present on non-health API routes too."""
+        res = client.get("/api/v1/demo/status")
+        assert res.headers.get("x-content-type-options") == "nosniff"
+        assert res.headers.get("x-frame-options") == "DENY"
+
+
+# ── Liveness Probe ────────────────────────────────────────────────
+
+class TestLiveness:
+    def test_liveness_returns_200(self, client):
+        """Liveness probe should always return 200."""
+        res = client.get("/api/v1/health/live")
+        assert res.status_code == 200
+
+    def test_liveness_returns_alive_true(self, client):
+        """Liveness response should contain {\"alive\": true}."""
+        res = client.get("/api/v1/health/live")
+        assert res.json() == {"alive": True}
+
+    def test_liveness_exempt_from_rate_limit(self, client):
+        """Liveness endpoint should not consume rate limit quota."""
+        for _ in range(10):
+            res = client.get("/api/v1/health/live")
+            assert res.status_code == 200
+            # Rate limit headers should NOT be present on exempt endpoints
+            assert "x-ratelimit-remaining" not in res.headers
+
+
+# ── Health Uptime ─────────────────────────────────────────────────
+
+class TestHealthUptime:
+    def test_health_includes_uptime_seconds(self, client):
+        """Health endpoint should report uptime_seconds field."""
+        res = client.get("/api/v1/health")
+        assert res.status_code == 200
+        data = res.json()
+        assert "uptime_seconds" in data
+        assert isinstance(data["uptime_seconds"], (int, float))
+        assert data["uptime_seconds"] >= 0
