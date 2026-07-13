@@ -4,6 +4,7 @@ FastAPI application entrypoint.
 """
 
 import logging
+import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
@@ -22,13 +23,28 @@ from backend.routes import ingestion, detection, evaluation, reporting, orchestr
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s — %(message)s")
 logger = logging.getLogger(__name__)
 
+# Module-level timestamp so the health endpoint can report uptime
+_startup_timestamp: float = 0.0
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    global _startup_timestamp
+    t0 = time.monotonic()
     mode = "DEMO (no LLM API key)" if DEMO_MODE else "LIVE (Gemini API)"
-    logger.info(f"RAG Sentinel starting — mode: {mode}")
+    _startup_timestamp = time.time()
+    elapsed = time.monotonic() - t0
+    logger.info(
+        "RAG Sentinel started — mode: %s, startup: %.3fs",
+        mode,
+        elapsed,
+    )
     yield
-    logger.info("RAG Sentinel shutting down.")
+    uptime = time.time() - _startup_timestamp
+    logger.info(
+        "RAG Sentinel shutting down — uptime: %.1fs",
+        uptime,
+    )
 
 
 app = FastAPI(
@@ -87,10 +103,12 @@ async def general_exception_handler(request, exc):
 
 @app.get("/api/v1/health")
 async def health() -> dict[str, Any]:
+    uptime = time.time() - _startup_timestamp if _startup_timestamp else 0.0
     return {
         "status": "ok",
         "version": APP_VERSION,
         "demo_mode": DEMO_MODE,
+        "uptime_seconds": round(uptime, 1),
     }
 
 
