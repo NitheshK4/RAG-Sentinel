@@ -18,6 +18,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from backend.core.config import APP_TITLE, APP_VERSION, API_PREFIX, DEMO_MODE
 from backend.core.rate_limiter import RateLimitMiddleware
 from backend.core.middleware import RequestIdMiddleware
+from backend.core.security_headers import SecurityHeadersMiddleware
 from backend.routes import ingestion, detection, evaluation, reporting, orchestrator, demo
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s — %(message)s")
@@ -68,6 +69,9 @@ app.add_middleware(
 
 # Rate limiting — per-IP sliding window
 app.add_middleware(RateLimitMiddleware)
+
+# Security headers — OWASP defense-in-depth
+app.add_middleware(SecurityHeadersMiddleware)
 
 # Request-ID correlation — traceability across logs
 app.add_middleware(RequestIdMiddleware)
